@@ -1,0 +1,50 @@
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
+
+export const validateUser = createAsyncThunk('auth/validateUser', async (_, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(import.meta.env.VITE_AUTH, {}, { withCredentials: true });
+    return response.data.user;
+  } catch (error) {
+    return rejectWithValue(error.response.data.message);
+  }
+});
+
+const initialState = {
+  user: null,
+  status: 'idle',
+  error: null,
+  loggedIn: false,
+};
+
+const authUserSlice = createSlice({
+  name: 'authUser',
+  initialState,
+  reducers: {
+    logout: (state) => {
+      state.user = null;
+      state.status = 'idle';
+      state.error = null;
+      state.loggedIn = false;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(validateUser.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(validateUser.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.user = action.payload;
+        state.loggedIn = true;
+      })
+      .addCase(validateUser.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+        state.loggedIn = false;
+      });
+  },
+});
+
+export const { logout } = authUserSlice.actions;
+export default authUserSlice.reducer;
