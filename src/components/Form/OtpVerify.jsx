@@ -63,7 +63,7 @@ function OtpVerify() {
               renderInput={(props) => <input {...props} />}
             />
             <div className="mt-5 w-full flex">
-              <Button className=" mr-auto" size="icon" onClick={() => { dispatch(setOtpInput(false)) }}>
+              <Button type='button' className=" mr-auto" size="icon" onClick={() => { dispatch(setOtpInput(false)) }}>
                 <ArrowLeft />
               </Button>
               {

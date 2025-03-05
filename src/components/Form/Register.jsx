@@ -6,10 +6,12 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import OtpVerify from "./OtpVerify";
 import axios from "axios";
 import toast from "react-hot-toast";
 import PrimarySpinner from "../Loaders/PrimarySpinner";
+import { User, Mail, Lock, Phone } from 'lucide-react';
 
 const schema = z
   .object({
@@ -52,11 +54,11 @@ function Register() {
         password: "",
         confirmPassword: "",
         contactNumber: "",
-      })
-      dispatch(clearSignupState())
-      dispatch(setOtpInput(false))
+      });
+      dispatch(clearSignupState());
+      dispatch(setOtpInput(false));
     }
-  }, [dispatch, status])
+  }, [dispatch, status]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -80,21 +82,23 @@ function Register() {
       try {
         dispatch(setUserCredsData(userCreds));
         try {
-          setLoadingButton(true)
+          setLoadingButton(true);
           const response = await axios.post(
-            import.meta.env.VITE_GETOTP,
+            `${import.meta.env.VITE_BASE_URL}/auth/sendotp`,
             { email: userCreds.email },
             { withCredentials: true }
           );
           if (response.status === 200) {
             dispatch(setOtpInput(true));
-            setLoadingButton(false)
+            setLoadingButton(false);
             toast.success("OTP sent to email");
           }
         } catch (error) {
-          setLoadingButton(false)
-          console.error(error)
-        } finally { setLoadingButton(false) }
+          setLoadingButton(false);
+          console.error(error);
+        } finally {
+          setLoadingButton(false);
+        }
       } catch (err) {
         console.error("Error dispatching setUserCredsData: ", err);
       }
@@ -109,15 +113,19 @@ function Register() {
         <>
           <form className="flex flex-col gap-3" onSubmit={signupSubmit}>
             <div>
-              <Input
-                className={`px-3 py-5 ${errors.firstName ? "border-red-500" : ""
-                  }`}
-                type="text"
-                id="firstName"
-                placeholder="First Name"
-                value={userCreds.firstName}
-                onChange={handleChange}
-              />
+              <Label htmlFor="firstName" className="text-sm">First Name</Label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <Input
+                  className={`pl-10 py-5 ${errors.firstName ? "border-red-500" : ""
+                    }`}
+                  type="text"
+                  id="firstName"
+                  placeholder="First Name"
+                  value={userCreds.firstName}
+                  onChange={handleChange}
+                />
+              </div>
               {errors.firstName && (
                 <span className="text-xs text-red-500">
                   {errors.firstName._errors[0]}
@@ -125,15 +133,19 @@ function Register() {
               )}
             </div>
             <div>
-              <Input
-                className={`px-3 py-5 ${errors.lastName ? "border-red-500" : ""
-                  }`}
-                type="text"
-                id="lastName"
-                placeholder="Last Name"
-                value={userCreds.lastName}
-                onChange={handleChange}
-              />
+              <Label htmlFor="lastName" className="text-sm">Last Name</Label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <Input
+                  className={`pl-10 py-5 ${errors.lastName ? "border-red-500" : ""
+                    }`}
+                  type="text"
+                  id="lastName"
+                  placeholder="Last Name"
+                  value={userCreds.lastName}
+                  onChange={handleChange}
+                />
+              </div>
               {errors.lastName && (
                 <span className="text-xs text-red-500">
                   {errors.lastName._errors[0]}
@@ -141,14 +153,19 @@ function Register() {
               )}
             </div>
             <div>
-              <Input
-                className={`px-3 py-5 ${errors.email ? "border-red-500" : ""}`}
-                type="email"
-                id="email"
-                placeholder="Email"
-                value={userCreds.email}
-                onChange={handleChange}
-              />
+              <Label htmlFor="email" className="text-sm">Email</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <Input
+                  className={`pl-10 py-5 ${errors.email ? "border-red-500" : ""
+                    }`}
+                  type="email"
+                  id="email"
+                  placeholder="Email"
+                  value={userCreds.email}
+                  onChange={handleChange}
+                />
+              </div>
               {errors.email && (
                 <span className="text-xs text-red-500">
                   {errors.email._errors[0]}
@@ -156,15 +173,19 @@ function Register() {
               )}
             </div>
             <div>
-              <Input
-                className={`px-3 py-5 ${errors.password ? "border-red-500" : ""
-                  }`}
-                type="password"
-                id="password"
-                placeholder="Password"
-                value={userCreds.password}
-                onChange={handleChange}
-              />
+              <Label htmlFor="password" className="text-sm">Password</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <Input
+                  className={`pl-10 py-5 ${errors.password ? "border-red-500" : ""
+                    }`}
+                  type="password"
+                  id="password"
+                  placeholder="Password"
+                  value={userCreds.password}
+                  onChange={handleChange}
+                />
+              </div>
               {errors.password && (
                 <span className="text-xs text-red-500">
                   {errors.password._errors[0]}
@@ -172,15 +193,19 @@ function Register() {
               )}
             </div>
             <div>
-              <Input
-                className={`px-3 py-5 ${errors.confirmPassword ? "border-red-500" : ""
-                  }`}
-                type="password"
-                id="confirmPassword"
-                placeholder="Confirm Password"
-                value={userCreds.confirmPassword}
-                onChange={handleChange}
-              />
+              <Label htmlFor="confirmPassword" className="text-sm">Confirm Password</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <Input
+                  className={`pl-10 py-5 ${errors.confirmPassword ? "border-red-500" : ""
+                    }`}
+                  type="password"
+                  id="confirmPassword"
+                  placeholder="Confirm Password"
+                  value={userCreds.confirmPassword}
+                  onChange={handleChange}
+                />
+              </div>
               {errors.confirmPassword && (
                 <span className="text-xs text-red-500">
                   {errors.confirmPassword._errors[0]}
@@ -188,15 +213,19 @@ function Register() {
               )}
             </div>
             <div>
-              <Input
-                className={`px-3 py-5 ${errors.contactNumber ? "border-red-500" : ""
-                  }`}
-                type="tel"
-                id="contactNumber"
-                placeholder="Contact Number"
-                value={userCreds.contactNumber}
-                onChange={handleChange}
-              />
+              <Label htmlFor="contactNumber" className="text-sm">Contact Number</Label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <Input
+                  className={`pl-10 py-5 ${errors.contactNumber ? "border-red-500" : ""
+                    }`}
+                  type="tel"
+                  id="contactNumber"
+                  placeholder="Contact Number"
+                  value={userCreds.contactNumber}
+                  onChange={handleChange}
+                />
+              </div>
               {errors.contactNumber && (
                 <span className="text-xs text-red-500">
                   {errors.contactNumber._errors[0]}

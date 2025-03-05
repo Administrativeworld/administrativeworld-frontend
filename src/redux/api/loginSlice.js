@@ -7,7 +7,7 @@ export const login = createAsyncThunk(
   "login",
   async (userCreds, { rejectWithValue }) => {
     try {
-      const response = await axios.post(import.meta.env.VITE_LOGIN, userCreds, {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/login`, userCreds, {
         withCredentials: true,
       });
       return { data: response.data, status: response.status }; // Return relevant success data along with status code

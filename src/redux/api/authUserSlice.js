@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const validateUser = createAsyncThunk('auth/validateUser', async (_, { rejectWithValue }) => {
   try {
-    const response = await axios.post(import.meta.env.VITE_AUTH, {}, { withCredentials: true });
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/validate`, {}, { withCredentials: true });
     return response.data.user;
   } catch (error) {
     return rejectWithValue(error.response.data.message);
