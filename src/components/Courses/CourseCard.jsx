@@ -11,10 +11,13 @@ function CourseCard({ course }) {
   const navigate = useNavigate();
   const { loggedIn, user } = useSelector((state) => state.authUser);
 
-  // Check if the user is enrolled
-  const isEnrolled = loggedIn && user
-    ? course.studentsEnroled.some((student) => student._id === user._id)
-    : false;
+  // Defensive check: return nothing if course is missing
+  if (!course || typeof course !== "object") return null;
+
+  const isEnrolled =
+    loggedIn && user && course.studentsEnroled?.length
+      ? course.studentsEnroled.some((student) => student?._id === user._id)
+      : false;
 
   return (
     <div className="flex justify-center">
@@ -26,13 +29,18 @@ function CourseCard({ course }) {
             className="w-full h-40 object-cover transform group-hover:scale-105 transition-transform duration-300"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <span className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm text-customOrange text-xs font-medium px-2 py-1 rounded-full">
-            {course.category.name}
-          </span>
+
+          {course.category?.name && (
+            <span className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm text-customOrange text-xs font-medium px-2 py-1 rounded-full">
+              {course.category.name}
+            </span>
+          )}
+
           <div className="absolute bottom-2 left-2 flex items-center gap-2">
             <Avatar className="w-7 h-7 border-2 border-white" />
             <span className="text-xs text-white font-medium">
-              {course.instructor?.firstName} {course.instructor?.lastName}
+              {course.instructor?.firstName ?? ""}{" "}
+              {course.instructor?.lastName ?? ""}
             </span>
           </div>
         </div>
@@ -43,7 +51,9 @@ function CourseCard({ course }) {
               {course.courseName}
             </h2>
             <p className="text-md font-bold text-customOrange ml-2">
-              {isEnrolled ? "Enrolled" : `₹${course.price.toLocaleString("en-IN")}`}
+              {isEnrolled
+                ? "Enrolled"
+                : `₹${course.price?.toLocaleString("en-IN") ?? "0"}`}
             </p>
           </div>
 
@@ -68,7 +78,7 @@ function CourseCard({ course }) {
           </div>
 
           <div className="flex flex-wrap gap-1 mb-2">
-            {course.tag.slice(0, 3).map((tag, index) => (
+            {course.tag?.slice(0, 3).map((tag, index) => (
               <span
                 key={index}
                 className="text-xs font-medium border text-customOrange px-2 py-0.5 rounded-full"
@@ -79,23 +89,23 @@ function CourseCard({ course }) {
           </div>
 
           <div className="border-t w-full mb-1"></div>
-          {
-            isEnrolled ? <Button
+          {isEnrolled ? (
+            <Button
               className="w-full mt-auto font-medium py-1.5 rounded-md transition-colors duration-200"
               variant="outline"
               onClick={() => navigate(`/home/enrolled?id=${course._id}`)}
             >
               Continue Learning
-            </Button> : <Button
+            </Button>
+          ) : (
+            <Button
               className="w-full mt-auto font-medium py-1.5 rounded-md transition-colors duration-200"
               variant="outline"
               onClick={() => navigate(`/home/course?id=${course._id}`)}
             >
               Enroll Now
             </Button>
-
-          }
-
+          )}
         </CardContent>
       </Card>
     </div>
@@ -118,10 +128,10 @@ CourseCard.propTypes = {
     instructor: PropTypes.shape({
       firstName: PropTypes.string,
       lastName: PropTypes.string,
-    }).isRequired,
+    }),
     category: PropTypes.shape({
-      name: PropTypes.string.isRequired,
-    }).isRequired,
+      name: PropTypes.string,
+    }),
   }).isRequired,
 };
 
