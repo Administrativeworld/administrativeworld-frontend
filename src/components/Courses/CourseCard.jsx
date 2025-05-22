@@ -89,6 +89,7 @@ function CourseCard({ course, ButtonName, path }) {
           </div>
 
           <div className="border-t w-full mb-1"></div>
+<<<<<<< HEAD
           {ButtonName === "Inspect" ? (
             <Button
               className="w-full mt-auto font-medium py-1.5 rounded-md transition-colors duration-200"
@@ -98,6 +99,9 @@ function CourseCard({ course, ButtonName, path }) {
               Inspect
             </Button>
           ) : isEnrolled ? (
+=======
+          {isEnrolled ? (
+>>>>>>> c5a957fb9bd3ab312d3d83f6ec5006013f7bea55
             <Button
               className="w-full mt-auto font-medium py-1.5 rounded-md transition-colors duration-200"
               variant="outline"
@@ -114,7 +118,10 @@ function CourseCard({ course, ButtonName, path }) {
               Enroll Now
             </Button>
           )}
+<<<<<<< HEAD
 
+=======
+>>>>>>> c5a957fb9bd3ab312d3d83f6ec5006013f7bea55
         </CardContent>
       </Card>
     </div>
