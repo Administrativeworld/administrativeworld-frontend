@@ -69,5 +69,8 @@
   "overrides": {
     "sharp": "0.32.6",
     "sharp-ico": "0.1.5"
+  },
+  "resolutions": {
+    "rollup": "3.29.4"
   }
 }
