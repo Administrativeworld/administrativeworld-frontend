@@ -49,7 +49,6 @@ function CourseInfo() {
     instructions: "",
     couponCode: "",
   });
-
   useEffect(() => {
     dispatch(getCategory());
   }, [dispatch]);
@@ -347,8 +346,8 @@ function CourseInfo() {
                             <DropdownMenuRadioGroup
                               onValueChange={handleCategoryChange}
                             >
-                              {categories?.data?.length > 0 ? (
-                                categories.data.map((cat) => (
+                              {categories?.length > 0 ? (
+                                categories.map((cat) => (
                                   <DropdownMenuRadioItem
                                     key={cat._id}
                                     value={cat}

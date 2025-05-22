@@ -6,7 +6,7 @@ import { Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-function CourseCard({ course }) {
+function CourseCard({ course, ButtonName, path }) {
   const rating = 4.5; // Dummy rating value
   const navigate = useNavigate();
   const { loggedIn, user } = useSelector((state) => state.authUser);
@@ -89,7 +89,15 @@ function CourseCard({ course }) {
           </div>
 
           <div className="border-t w-full mb-1"></div>
-          {isEnrolled ? (
+          {ButtonName === "Inspect" ? (
+            <Button
+              className="w-full mt-auto font-medium py-1.5 rounded-md transition-colors duration-200"
+              variant="outline"
+              onClick={() => navigate(path)}
+            >
+              Inspect
+            </Button>
+          ) : isEnrolled ? (
             <Button
               className="w-full mt-auto font-medium py-1.5 rounded-md transition-colors duration-200"
               variant="outline"
@@ -106,6 +114,7 @@ function CourseCard({ course }) {
               Enroll Now
             </Button>
           )}
+
         </CardContent>
       </Card>
     </div>
@@ -119,6 +128,7 @@ CourseCard.propTypes = {
     thumbnail: PropTypes.string.isRequired,
     price: PropTypes.number.isRequired,
     courseDescription: PropTypes.string.isRequired,
+
     tag: PropTypes.arrayOf(PropTypes.string).isRequired,
     studentsEnroled: PropTypes.arrayOf(
       PropTypes.shape({
@@ -133,6 +143,8 @@ CourseCard.propTypes = {
       name: PropTypes.string,
     }),
   }).isRequired,
+  ButtonName: PropTypes.string,
+  Path: PropTypes.string
 };
 
 export default CourseCard;

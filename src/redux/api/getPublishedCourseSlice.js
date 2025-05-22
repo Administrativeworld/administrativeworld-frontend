@@ -7,7 +7,7 @@ export const getPublishedCourses = createAsyncThunk(
   "getPublishedCourses",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/courses/getAllCourses`, {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/courses/getAllCourses`, {
         withCredentials: true,
       });
       return { data: response.data, status: response.status }; // Return relevant success data along with status code

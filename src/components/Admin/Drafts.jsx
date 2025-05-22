@@ -23,8 +23,8 @@ function Drafts() {
 
   return (
     <div>
-      {(location.pathname === "/administrativeworld/admin/course/draft" ||
-        location.pathname === "/administrativeworld/admin/course/draft/") && (
+      {(location.pathname === "/admin/course/draft" ||
+        location.pathname === "/admin/course/draft/") && (
           <>
             <div className="p-2 flex items-center">
               <div className="relative">

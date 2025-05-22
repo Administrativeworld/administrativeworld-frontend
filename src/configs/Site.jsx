@@ -33,7 +33,7 @@ export const adminNavLinks = [
   },
   {
     title: "Category",
-    path: "",
+    path: "/admin/category",
     icon: <List />,
   },
   {

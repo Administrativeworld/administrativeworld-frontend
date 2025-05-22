@@ -19,6 +19,8 @@ import EnrolledCoursePage from "./components/User/EnrolledCoursePage.jsx";
 import AboutUs from "./components/AboutUs/AboutUs.jsx";
 import ContactUs from "./components/ContactUs/ContactUs.jsx";
 import ComingSoon from "./components/AlertScreens/ComingSoon.jsx";
+import Categories from "./components/Admin/Categories.jsx";
+import PublishedCoursePage from "./components/Admin/NestedComponents/PublishedCoursePage.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -71,7 +73,12 @@ function App() {
             <Route index element={<CoursesList />} />
             <Route path="create" element={<CourseBuilderStepper />} />
             <Route path="draft" element={<Drafts />} />
-            <Route path="published" element={<Published />} />
+            <Route path="published" element={<Published />} >
+              <Route path=":courseName" element={<PublishedCoursePage />} />
+            </Route>
+
+          </Route>
+          <Route path="category" element={<Published />}>
 
           </Route>
         </Route>

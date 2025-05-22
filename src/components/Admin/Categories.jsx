@@ -3,15 +3,11 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from "../u
 import { Slash } from "lucide-react";
 
 
-function Courses() {
-  const location = useLocation();
-  const navigate = useNavigate();
-
+function Categories() {
   const basePath = "/admin/";
   const pathSegments = location.pathname.replace(basePath, "").split("/").filter(Boolean);
   return (
     <div>
-
       <div className="p-2 mb-3">
         <Breadcrumb>
           <BreadcrumbList className="flex items-center space-x-1">
@@ -44,11 +40,11 @@ function Courses() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
+      <div>
 
-      <Outlet />
-
+      </div>
     </div>
   )
 }
 
-export default Courses
+export default Categories
