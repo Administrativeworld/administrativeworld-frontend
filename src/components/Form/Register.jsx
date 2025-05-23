@@ -105,148 +105,144 @@ function Register() {
     }
   };
 
+  const FormField = ({ id, label, type, placeholder, icon: Icon, value, onChange, error }) => (
+    <div className="space-y-2">
+      <Label htmlFor={id} className="text-sm font-medium">
+        {label}
+      </Label>
+      <div className="relative">
+        <Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Input
+          className={`pl-10 h-12 ${error ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
+          type={type}
+          id={id}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+        />
+      </div>
+      {error && (
+        <span className="text-xs text-red-500 block mt-1">
+          {error._errors[0]}
+        </span>
+      )}
+    </div>
+  );
+
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full max-w-4xl mx-auto p-4 sm:p-6">
       {otpInput ? (
         <OtpVerify />
       ) : (
         <>
-          <form className="flex flex-col gap-3" onSubmit={signupSubmit}>
-            <div>
-              <Label htmlFor="firstName" className="text-sm">First Name</Label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                <Input
-                  className={`pl-10 py-5 ${errors.firstName ? "border-red-500" : ""
-                    }`}
-                  type="text"
-                  id="firstName"
-                  placeholder="First Name"
-                  value={userCreds.firstName}
-                  onChange={handleChange}
-                />
-              </div>
-              {errors.firstName && (
-                <span className="text-xs text-red-500">
-                  {errors.firstName._errors[0]}
-                </span>
-              )}
+          <form className="space-y-6" onSubmit={signupSubmit}>
+            {/* Name Fields - Horizontal on larger screens, vertical on mobile */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              <FormField
+                id="firstName"
+                label="First Name"
+                type="text"
+                placeholder="Enter your first name"
+                icon={User}
+                value={userCreds.firstName}
+                onChange={handleChange}
+                error={errors.firstName}
+              />
+              <FormField
+                id="lastName"
+                label="Last Name"
+                type="text"
+                placeholder="Enter your last name"
+                icon={User}
+                value={userCreds.lastName}
+                onChange={handleChange}
+                error={errors.lastName}
+              />
             </div>
-            <div>
-              <Label htmlFor="lastName" className="text-sm">Last Name</Label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                <Input
-                  className={`pl-10 py-5 ${errors.lastName ? "border-red-500" : ""
-                    }`}
-                  type="text"
-                  id="lastName"
-                  placeholder="Last Name"
-                  value={userCreds.lastName}
-                  onChange={handleChange}
-                />
-              </div>
-              {errors.lastName && (
-                <span className="text-xs text-red-500">
-                  {errors.lastName._errors[0]}
-                </span>
-              )}
+
+            {/* Email Field - Full width */}
+            <div className="grid grid-cols-1">
+              <FormField
+                id="email"
+                label="Email"
+                type="email"
+                placeholder="Enter your email address"
+                icon={Mail}
+                value={userCreds.email}
+                onChange={handleChange}
+                error={errors.email}
+              />
             </div>
-            <div>
-              <Label htmlFor="email" className="text-sm">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                <Input
-                  className={`pl-10 py-5 ${errors.email ? "border-red-500" : ""
-                    }`}
-                  type="email"
-                  id="email"
-                  placeholder="Email"
-                  value={userCreds.email}
-                  onChange={handleChange}
-                />
-              </div>
-              {errors.email && (
-                <span className="text-xs text-red-500">
-                  {errors.email._errors[0]}
-                </span>
-              )}
+
+            {/* Password Fields - Horizontal on larger screens, vertical on mobile */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              <FormField
+                id="password"
+                label="Password"
+                type="password"
+                placeholder="Enter your password"
+                icon={Lock}
+                value={userCreds.password}
+                onChange={handleChange}
+                error={errors.password}
+              />
+              <FormField
+                id="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                placeholder="Confirm your password"
+                icon={Lock}
+                value={userCreds.confirmPassword}
+                onChange={handleChange}
+                error={errors.confirmPassword}
+              />
             </div>
-            <div>
-              <Label htmlFor="password" className="text-sm">Password</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                <Input
-                  className={`pl-10 py-5 ${errors.password ? "border-red-500" : ""
-                    }`}
-                  type="password"
-                  id="password"
-                  placeholder="Password"
-                  value={userCreds.password}
-                  onChange={handleChange}
-                />
-              </div>
-              {errors.password && (
-                <span className="text-xs text-red-500">
-                  {errors.password._errors[0]}
-                </span>
-              )}
+
+            {/* Contact Number - Full width */}
+            <div className="grid grid-cols-1">
+              <FormField
+                id="contactNumber"
+                label="Contact Number"
+                type="tel"
+                placeholder="Enter your contact number"
+                icon={Phone}
+                value={userCreds.contactNumber}
+                onChange={handleChange}
+                error={errors.contactNumber}
+              />
             </div>
-            <div>
-              <Label htmlFor="confirmPassword" className="text-sm">Confirm Password</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                <Input
-                  className={`pl-10 py-5 ${errors.confirmPassword ? "border-red-500" : ""
-                    }`}
-                  type="password"
-                  id="confirmPassword"
-                  placeholder="Confirm Password"
-                  value={userCreds.confirmPassword}
-                  onChange={handleChange}
-                />
+
+            {/* Global Error Messages */}
+            {error && (
+              <div className="text-red-500 text-sm p-3 bg-red-50 border border-red-200 rounded-md">
+                Error: {error}
               </div>
-              {errors.confirmPassword && (
-                <span className="text-xs text-red-500">
-                  {errors.confirmPassword._errors[0]}
-                </span>
-              )}
-            </div>
-            <div>
-              <Label htmlFor="contactNumber" className="text-sm">Contact Number</Label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                <Input
-                  className={`pl-10 py-5 ${errors.contactNumber ? "border-red-500" : ""
-                    }`}
-                  type="tel"
-                  id="contactNumber"
-                  placeholder="Contact Number"
-                  value={userCreds.contactNumber}
-                  onChange={handleChange}
-                />
+            )}
+
+            {loading && (
+              <div className="text-blue-500 text-sm p-3 bg-blue-50 border border-blue-200 rounded-md">
+                Loading...
               </div>
-              {errors.contactNumber && (
-                <span className="text-xs text-red-500">
-                  {errors.contactNumber._errors[0]}
-                </span>
-              )}
-            </div>
-            <div className="mt-4 flex justify-end">
-              {loadingButton ? (
-                <Button disabled>
-                  <span className="text-lg">Next</span>
-                  <PrimarySpinner />
-                </Button>
-              ) : (
-                <Button type="submit">
-                  <span className="text-lg">Next</span>
-                </Button>
-              )}
+            )}
+
+            {/* Submit Button */}
+            <div className="flex justify-center md:justify-end pt-4">
+              <Button
+                type="submit"
+                className="w-full md:w-auto min-w-[120px] h-12"
+                disabled={loadingButton}
+              >
+                {loadingButton ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <PrimarySpinner />
+                    <span>Sending OTP...</span>
+                  </div>
+                ) : (
+                  <span className="text-base">Next</span>
+                )}
+              </Button>
             </div>
           </form>
-          {loading && <p>Loading...</p>}
-          {error && <p className="text-red-500">Error: {error}</p>}
         </>
       )}
     </div>
