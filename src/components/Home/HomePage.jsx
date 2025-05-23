@@ -25,17 +25,18 @@ export default function HomePage() {
     <div>
       <section className="relative w-full min-h-[500px] md:min-h-[600px] flex items-center px-6 md:px-16">
         {/* Background Image */}
-        <div className="absolute inset-0 bg-cover bg-center opacity-70 
-        bg-[url('/hero-bg.jpeg')] 
-        ">
-        </div>
+        <div
+          className="absolute inset-0 bg-center bg-no-repeat bg-cover opacity-60"
+          style={{ backgroundImage: "url('/new_hero2.png')" }}
+        />
+
 
         {/* Overlay Content */}
         <div className="relative z-10 max-w-2xl text-left">
-          <h1 className="text-3xl md:text-5xl font-bold text-white drop-shadow-lg">
+          <h1 className="text-3xl md:text-5xl font-bold text-foreground drop-shadow-lg">
             Your <span className="text-customOrange">Pathway</span> to Serving the <span className="text-customOrange">Nation</span>
           </h1>
-          <p className="text-lg md:text-xl text-white mt-4 drop-shadow-md">
+          <p className="text-lg md:text-xl text-foreground mt-4 drop-shadow-md">
             Administration world  is a training coching provider based across the india that specialises in accredited and bespoke training courses. We crush the...
           </p>
 
