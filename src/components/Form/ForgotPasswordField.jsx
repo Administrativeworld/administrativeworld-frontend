@@ -7,7 +7,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 function ForgotPasswordField({ onBack }) {
-  const [emailOrUsername, setEmailOrUsername] = useState("");
+  const [email, setemail] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -16,14 +16,14 @@ function ForgotPasswordField({ onBack }) {
     try {
       setLoading(true);
       const forgotPasswordResponse = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/auth/reset-password-token`, emailOrUsername, { withCredentials: true })
+        `${import.meta.env.VITE_BASE_URL}/auth/reset-password-token`, { email }, { withCredentials: true })
       if (forgotPasswordResponse.status === 200) {
         toast.success("Password Reset Email Sent")
         setLoading(false)
-        setEmailOrUsername("")
+        setemail("")
         onBack()
       } else {
-        toast.error("check your email or username, or wait a while")
+        toast.error("check your email, or wait a while")
         setLoading(false)
       }
     } catch (error) {
@@ -78,20 +78,20 @@ function ForgotPasswordField({ onBack }) {
       </div>
 
       <form className="space-y-5" onSubmit={handleSubmit}>
-        {/* Email/Username Field */}
+        {/* Email Field */}
         <div className="space-y-2">
-          <Label htmlFor="emailOrUsername" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Email Address or Username
+          <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Email Address
           </Label>
           <div className="relative group">
             <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 h-4 w-4 transition-colors duration-200" />
             <Input
               className="pl-10 h-11 transition-all duration-200"
               type="text"
-              id="emailOrUsername"
-              placeholder="Enter your email address or username"
-              value={emailOrUsername}
-              onChange={(e) => setEmailOrUsername(e.target.value)}
+              id="email"
+              placeholder="Enter your email address "
+              value={email}
+              onChange={(e) => setemail(e.target.value)}
               required
             />
           </div>
@@ -101,7 +101,7 @@ function ForgotPasswordField({ onBack }) {
         <Button
           type="submit"
           className="w-full h-11 font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-          disabled={loading || !emailOrUsername.trim()}
+          disabled={loading || !email.trim()}
         >
           {loading ? (
             <div className="flex items-center justify-center gap-2">
