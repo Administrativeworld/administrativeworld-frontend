@@ -21,6 +21,7 @@ import ContactUs from "./components/ContactUs/ContactUs.jsx";
 import ComingSoon from "./components/AlertScreens/ComingSoon.jsx";
 import Categories from "./components/Admin/Categories.jsx";
 import PublishedCoursePage from "./components/Admin/NestedComponents/PublishedCoursePage.jsx";
+import ResetPasswordPage from "./components/Form/ResetPasswordPage.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -56,7 +57,7 @@ function App() {
           <Route path="notes" element={<ComingSoon />} />
           <Route path="test" element={<ComingSoon />} />
         </Route>
-
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         {/* Admin Routes (Only accessible by Admins) */}
         <Route
           path="/admin"
@@ -78,7 +79,7 @@ function App() {
             </Route>
 
           </Route>
-          <Route path="category" element={<Published />}>
+          <Route path="category" element={<Categories />}>
 
           </Route>
         </Route>

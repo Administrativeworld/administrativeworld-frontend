@@ -6,6 +6,7 @@ import { Label } from "../ui/label";
 import { login, clearLoginState } from "@/redux/api/loginSlice";
 import { toast } from "react-hot-toast";
 import PrimarySpinner from "../Loaders/PrimarySpinner";
+import ForgotPasswordField from "./ForgotPasswordField";
 import { useNavigate } from "react-router-dom";
 import { validateUser } from "@/redux/api/authUserSlice";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
@@ -15,6 +16,7 @@ function Login() {
   const navigate = useNavigate();
   const [loginCreds, setLoginCreds] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [forgotPassword, setForgotPassword] = useState(false);
   const { loading, error, status } = useSelector((state) => state.login);
 
   useEffect(() => {
@@ -35,7 +37,6 @@ function Login() {
     e.preventDefault();
     dispatch(login({ email: loginCreds.email, password: loginCreds.password }));
   };
-
   const googleAuthUrl = `${import.meta.env.VITE_BASE_URL}/auth/google`;
 
   const handleGoogleLogin = () => {
@@ -67,6 +68,15 @@ function Login() {
       />
     </svg>
   );
+
+  // Conditional rendering: show ForgotPasswordField if forgotPassword is true
+  if (forgotPassword) {
+    return (
+      <div className="w-full">
+        <ForgotPasswordField onBack={() => setForgotPassword(false)} />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
@@ -127,12 +137,13 @@ function Login() {
 
         {/* Forgot Password Link */}
         <div className="flex justify-end">
-          <a
-            href="#"
-            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200"
+          <button
+            type="button"
+            onClick={() => setForgotPassword(true)}
+            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200 cursor-pointer"
           >
             Forgot your password?
-          </a>
+          </button>
         </div>
 
         {/* Error Message */}
