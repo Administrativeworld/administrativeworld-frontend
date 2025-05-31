@@ -54,8 +54,8 @@ const ContactUs = () => {
               <CardContent className="pt-6">
                 <Phone className="w-10 h-10 text-primary mb-4" />
                 <h3 className="font-semibold mb-2">Phone</h3>
-                <p className="">+91 123-456-7890</p>
-                <p className="">Mon-Sat: 9:00 AM - 6:00 PM</p>
+                <p className="">+91 98968-59767</p>
+                <p className="">Mon-Sat: 8:00 AM - 6:00 PM</p>
               </CardContent>
             </Card>
 
@@ -72,8 +72,8 @@ const ContactUs = () => {
               <CardContent className="pt-6">
                 <MapPin className="w-10 h-10 text-primary mb-4" />
                 <h3 className="font-semibold mb-2">Location</h3>
-                <p className="">123 Education Street</p>
-                <p className="">New Delhi, India 110001</p>
+                <p className="">Hisar (Haryana)</p>
+                <p className="">125001</p>
               </CardContent>
             </Card>
 
@@ -82,7 +82,7 @@ const ContactUs = () => {
                 <Clock className="w-10 h-10 text-primary mb-4" />
                 <h3 className="font-semibold mb-2">Office Hours</h3>
                 <p className="">Monday - Saturday</p>
-                <p className="">9:00 AM - 6:00 PM</p>
+                <p className="">10:00 AM - 6:00 PM</p>
               </CardContent>
             </Card>
           </div>

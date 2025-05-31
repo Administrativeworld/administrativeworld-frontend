@@ -47,14 +47,13 @@ const Footer = () => {
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Book className="h-5 w-5 text-primary" />
                   Book Store
-                  <Badge className="ml-2">Est. 2022</Badge>
+                  <Badge className="ml-2">Est. 2018</Badge>
                 </CardTitle>
                 <CardDescription className="text-secondary-foreground/75">Your Gateway to Knowledge</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-secondary-foreground/75">
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                  has been the industry&apos;s standard dummy text.
+                  Explore a wide range of books and resources dedicated to Public Administration. Whether you're a student, aspirant, or professional, our curated collection is designed to deepen your understanding of how public institutions work and evolve..
                 </p>
               </CardContent>
             </Card>
@@ -176,15 +175,15 @@ const Footer = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <Button variant="secondary" className="justify-start gap-2">
                     <Phone className="h-4 w-4" />
-                    +0913-705-3875
+                    +91 98968-59767
                   </Button>
                   <Button variant="secondary" className="justify-start gap-2">
                     <Mail className="h-4 w-4" />
-                    ElizabethJ@jourrapide.com
+                    contactadworld@gmail.com
                   </Button>
                   <Button variant="secondary" className="justify-start gap-2">
                     <MapPin className="h-4 w-4" />
-                    4808 Skinner Hollow Road
+                    Hisar (Haryana)
                   </Button>
                 </div>
               </CardContent>
@@ -198,14 +197,14 @@ const Footer = () => {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-sm text-secondary-foreground/75">
-              BookStore All Rights Reserved, 2022
+              Administrative World All Rights Reserved, 2018
             </p>
             <div className="flex gap-3">
               <Badge variant="outline" className="bg-background/50">
-                <Book className="h-4 w-4 mr-1" /> 10K+ Books
+                <Book className="h-4 w-4 mr-1" /> 5+ Books
               </Badge>
               <Badge variant="outline" className="bg-background/50">
-                <Users className="h-4 w-4 mr-1" /> 5K+ Users
+                <Users className="h-4 w-4 mr-1" /> 70K+ Users
               </Badge>
             </div>
           </div>
