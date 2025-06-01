@@ -118,16 +118,8 @@ export const navBarDefaultLinks = [
     path: "/home/explore"
   },
   {
-    title: "Exams",
-    path: "exams"
-  },
-  {
-    title: "Mock Test",
-    path: "test"
-  },
-  {
-    title: "Notes",
-    path: "notes"
+    title: "Store",
+    path: "/home/store"
   },
   {
     title: "AboutUs",
