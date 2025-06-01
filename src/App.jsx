@@ -42,7 +42,6 @@ function App() {
         <Route
           path="/login"
           element={loggedIn ? <Navigate to="/home" /> : <Form />}
-
         />
 
         {/* Public Routes */}
@@ -54,11 +53,13 @@ function App() {
           <Route path="user" element={loggedIn ? <UserProfile /> : < Navigate to="/login" />} />
           <Route path="about" element={<AboutUs />} />
           <Route path="contact" element={<ContactUs />} />
-          <Route path="exams" element={<ComingSoon />} />
-          <Route path="notes" element={<ComingSoon />} />
-          <Route path="test" element={<ComingSoon />} />
+          {/* <Route path="exams" element={<ComingSoon />} /> */}
+          {/* <Route path="notes" element={<ComingSoon />} /> */}
+          {/* <Route path="test" element={<ComingSoon />} /> */}
         </Route>
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+
         {/* Admin Routes (Only accessible by Admins) */}
         <Route
           path="/admin"
@@ -80,7 +81,7 @@ function App() {
             </Route>
 
           </Route>
-          <Route path="enrolluser" element={<AdminEnrollStudentForm/>}/>
+          <Route path="enrolluser" element={<AdminEnrollStudentForm />} />
           <Route path="category" element={<Categories />}>
 
           </Route>

@@ -8,13 +8,6 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel';
-import {
   Tabs,
   TabsContent,
   TabsList,
@@ -31,23 +24,7 @@ import {
   Bookmark
 } from 'lucide-react';
 
-const slideImages = [
-  {
-    url: "/api/placeholder/1200/600",
-    title: "Expert Faculty",
-    description: "Learn from experienced UPSC mentors"
-  },
-  {
-    url: "/api/placeholder/1200/600",
-    title: "Modern Facilities",
-    description: "State-of-the-art learning environment"
-  },
-  {
-    url: "/api/placeholder/1200/600",
-    title: "Success Stories",
-    description: "Join our community of successful aspirants"
-  }
-];
+
 
 const achievements = [
   { number: "10,000+", label: "Students Enrolled" },
@@ -57,49 +34,10 @@ const achievements = [
 ];
 
 const AdditionalDetails = () => {
-  const [activeSlide, setActiveSlide] = useState(0);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % slideImages.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
 
   return (
     <div className="space-y-8 py-4 sm:py-8">
-      {/* Slideshow Section */}
-      <section className="w-full px-2 sm:px-4">
-        <div className="max-w-6xl mx-auto">
-          <Carousel
-            className="relative w-full"
-            selectedIndex={activeSlide}
-            setSelectedIndex={setActiveSlide}
-          >
-            <CarouselContent>
-              {slideImages.map((slide, index) => (
-                <CarouselItem key={index}>
-                  <div className="relative">
-                    <img
-                      src={slide.url}
-                      alt={slide.title}
-                      className="w-full h-48 sm:h-64 md:h-[400px] object-cover rounded-lg"
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6 bg-gradient-to-t from-black/60 to-transparent text-white rounded-b-lg">
-                      <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">{slide.title}</h3>
-                      <p className="text-sm sm:text-base">{slide.description}</p>
-                    </div>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <div className="hidden sm:block">
-              <CarouselPrevious className="left-2" />
-              <CarouselNext className="right-2" />
-            </div>
-          </Carousel>
-        </div>
-      </section>
 
       {/* Achievements Section */}
       <section className="w-full px-2 sm:px-4">
