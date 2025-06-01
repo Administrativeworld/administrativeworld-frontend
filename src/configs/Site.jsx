@@ -12,6 +12,7 @@ import {
   SquarePlus,
   LifeBuoy,
   BookCheck,
+  BookOpen
 } from "lucide-react";
 import { Settings, LogOut } from "lucide-react";
 
@@ -40,6 +41,11 @@ export const adminNavLinks = [
     title: "User Insights",
     path: "",
     icon: <Users />,
+  },
+  {
+    title: "Enroll",
+    path: "/admin/enrolluser",
+    icon: <BookOpen />,
   },
   {
     title: "Post",

@@ -1,25 +1,24 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+
+import { fetchCourses } from "@/redux/api/getCourses";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, SquareArrowOutUpRightIcon } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
 import CourseCard from "../Courses/CourseCard";
 import SerivisesFeatures from "./SerivisesFeatures";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { fetchCourses } from "@/redux/api/getCourses";
 import AdditionalDetails from "./AdditionalDetails";
 
 export default function HomePage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { courses } = useSelector((state) => state.courses);
+
+  const courses = useSelector((state) => state.courses?.courses || []);
+  const loading = useSelector((state) => state.courses?.loading);
 
   useEffect(() => {
     dispatch(fetchCourses({ page: 1, limit: 3, categoryIds: [] }));
   }, [dispatch]);
-
-  if (courses) {
-    // console.log(courses)
-  }
 
   return (
     <div>
@@ -30,17 +29,17 @@ export default function HomePage() {
           style={{ backgroundImage: "url('/new_hero2.png')" }}
         />
 
-
         {/* Overlay Content */}
         <div className="relative z-10 max-w-2xl text-left">
           <h1 className="text-3xl md:text-5xl font-bold text-foreground drop-shadow-lg">
-            Your <span className="text-customOrange">Pathway</span> to Serving the <span className="text-customOrange">Nation</span>
+            Your <span className="text-customOrange">Pathway</span> to Serving the{" "}
+            <span className="text-customOrange">Nation</span>
           </h1>
           <p className="text-lg md:text-xl text-foreground mt-4 drop-shadow-md">
-            Administration world  is a training coching provider based across the india that specialises in accredited and bespoke training courses. We crush the...
+            Administration world is a training coaching provider based across India that
+            specialises in accredited and bespoke training courses. We crush the...
           </p>
 
-          {/* Call-to-Action Button */}
           <div className="mt-6">
             <Button className="px-6 py-3 text-lg font-medium">
               Explore Our Content
@@ -48,35 +47,45 @@ export default function HomePage() {
             </Button>
           </div>
 
-          {/* Additional Links */}
           <div className="mt-4 flex space-x-6">
-            <Link to="/home/explore" className=" hover:underline">Courses</Link>
-            <Link to="/home/about" className=" hover:underline">About us</Link>
+            <Link to="/home/explore" className="hover:underline">
+              Courses
+            </Link>
+            <Link to="/home/about" className="hover:underline">
+              About us
+            </Link>
           </div>
         </div>
       </section>
-      <div>
-        <div className="mt-12">
-          <h2 className="text-2xl font-semibold text-center mb-6">Popular Courses</h2>
 
-          <div className=" flex flex-wrap justify-center gap-5">
-            {courses.map((course) => (
+      <div className="mt-12">
+        <h2 className="text-2xl font-semibold text-center mb-6">Popular Courses</h2>
+
+        <div className="flex flex-wrap justify-center gap-5">
+          {loading ? (
+            <p>Loading courses...</p>
+          ) : courses.length > 0 ? (
+            courses.map((course) => (
               <CourseCard key={course._id} course={course} ButtonName="Enroll Now" />
-            ))}
-          </div>
+            ))
+          ) : (
+            <p>No courses available.</p>
+          )}
+        </div>
 
-
-          <div className="flex justify-center mt-6">
-            <Button className="px-6 py-2 text-sm font-medium" variant="default" onClick={() => navigate('/home/explore')}>
-              Explore More <SquareArrowOutUpRightIcon className="ml-2" />
-            </Button>
-          </div>
+        <div className="flex justify-center mt-6">
+          <Button
+            className="px-6 py-2 text-sm font-medium"
+            onClick={() => navigate("/home/explore")}
+          >
+            Explore More <SquareArrowOutUpRightIcon className="ml-2" />
+          </Button>
         </div>
 
         <SerivisesFeatures />
       </div>
+
       <AdditionalDetails />
     </div>
-
   );
 }

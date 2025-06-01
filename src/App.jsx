@@ -22,6 +22,7 @@ import ComingSoon from "./components/AlertScreens/ComingSoon.jsx";
 import Categories from "./components/Admin/Categories.jsx";
 import PublishedCoursePage from "./components/Admin/NestedComponents/PublishedCoursePage.jsx";
 import ResetPasswordPage from "./components/Form/ResetPasswordPage.jsx";
+import AdminEnrollStudentForm from "./components/Admin/manualEnrollStudent.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -79,6 +80,7 @@ function App() {
             </Route>
 
           </Route>
+          <Route path="enrolluser" element={<AdminEnrollStudentForm/>}/>
           <Route path="category" element={<Categories />}>
 
           </Route>
