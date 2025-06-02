@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {
-  Mail, Phone, MapPin, Clock, MessageSquare, Send, Facebook, Twitter, Instagram, Youtube,
+  Mail, Phone, MapPin, Clock, MessageSquare, Send,Facebook, Twitter, Instagram, Youtube,
 } from 'lucide-react';
 
 const ContactUs = () => {
@@ -167,10 +167,13 @@ const ContactUs = () => {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-6">Connect With Us</h2>
           <div className="flex justify-center space-x-6">
-            <Button variant="outline" size="lg" className="rounded-full"><Facebook className="w-5 h-5" /></Button>
+            <Button variant="outline" size="lg" className="rounded-full"><a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer">
+            <Facebook className="w-5 h-5" />
+            </a></Button>
             <Button variant="outline" size="lg" className="rounded-full"><Twitter className="w-5 h-5" /></Button>
             <Button variant="outline" size="lg" className="rounded-full"><Instagram className="w-5 h-5" /></Button>
-            <Button variant="outline" size="lg" className="rounded-full"><Youtube className="w-5 h-5" /></Button>
+            <Button asChild variant="outline" size="lg" className="rounded-full"><a href="https://www.youtube.com/@Admn_World" target="_blank" rel="noopener noreferrer">
+            <Youtube className="w-5 h-5" /></a></Button>
           </div>
         </div>
       </section>
@@ -183,11 +186,13 @@ const ContactUs = () => {
             <Button variant="outline" className="h-auto py-8 flex flex-col items-center">
               <MessageSquare className="w-8 h-8 mb-2" />
               <span className="text-lg font-semibold">Live Chat Support</span>
-              <span className="text-sm ">Available 9 AM - 6 PM</span>
+              <span className="text-sm ">+91 98968-59767</span>
+              <span className="text-sm ">Available 8 AM - 6 PM</span>
             </Button>
             <Button variant="outline" className="h-auto py-8 flex flex-col items-center">
               <Mail className="w-8 h-8 mb-2" />
               <span className="text-lg font-semibold">Email Support</span>
+              <span className="text-sm ">contactadworld01@gmail.com</span>
               <span className="text-sm ">24/7 Response</span>
             </Button>
           </div>

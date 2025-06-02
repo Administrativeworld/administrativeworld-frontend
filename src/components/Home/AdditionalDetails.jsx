@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Card,
   CardContent,
@@ -27,14 +28,22 @@ import {
 
 
 const achievements = [
-  { number: "10,000+", label: "Students Enrolled" },
-  { number: "500+", label: "Selections" },
-  { number: "50+", label: "Expert Mentors" },
+  { number: "1000+", label: "Students Enrolled" },
+  { number: "50+", label: "Selections" },
+  { number: "2+", label: "Expert Mentors" },
   { number: "95%", label: "Success Rate" }
 ];
 
 const AdditionalDetails = () => {
+  
+  const navigate = useNavigate();
 
+  const handleEnroll = () => {
+    navigate("/home/explore");
+  };
+  const handleLearnMore = () => {
+    navigate('/home/about'); 
+  };
 
   return (
     <div className="space-y-8 py-4 sm:py-8">
@@ -180,8 +189,8 @@ const AdditionalDetails = () => {
               <CardDescription className="text-sm">Join Administrative World and take the first step towards your dream career</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 sm:space-y-0 sm:space-x-4">
-              <Button size="lg" className="w-full sm:w-auto">Enroll Now</Button>
-              <Button variant="outline" size="lg" className="w-full sm:w-auto">Learn More</Button>
+              <Button size="lg" className="w-full sm:w-auto" onClick={handleEnroll}>Enroll Now</Button>
+              <Button variant="outline" size="lg" className="w-full sm:w-auto" onClick={handleLearnMore}>Learn More</Button>
             </CardContent>
           </Card>
         </div>
