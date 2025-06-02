@@ -23,6 +23,9 @@ import Categories from "./components/Admin/Categories.jsx";
 import PublishedCoursePage from "./components/Admin/NestedComponents/PublishedCoursePage.jsx";
 import ResetPasswordPage from "./components/Form/ResetPasswordPage.jsx";
 import AdminEnrollStudentForm from "./components/Admin/manualEnrollStudent.jsx";
+import Books from "./components/Admin/Books/Books.jsx";
+import CreateBook from "./components/Admin/Books/CreateBook/CreateBook.jsx";
+import BooksIndex from "./components/Admin/Books/CreateBook/BooksIndex.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -57,6 +60,8 @@ function App() {
           {/* <Route path="notes" element={<ComingSoon />} /> */}
           {/* <Route path="test" element={<ComingSoon />} /> */}
         </Route>
+
+
         <Route path="/reset-password" element={<ResetPasswordPage />} />
 
 
@@ -80,6 +85,10 @@ function App() {
               <Route path=":courseName" element={<PublishedCoursePage />} />
             </Route>
 
+          </Route>
+          <Route path="books" element={<Books />} >
+            <Route index element={<BooksIndex />} />
+            <Route path="create" element={<CreateBook />} />
           </Route>
           <Route path="enrolluser" element={<AdminEnrollStudentForm />} />
           <Route path="category" element={<Categories />}>

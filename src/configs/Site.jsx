@@ -28,6 +28,11 @@ export const adminNavLinks = [
     icon: <Notebook />,
   },
   {
+    title: "Books",
+    path: "/admin/books",
+    icon: <BookCheck />,
+  },
+  {
     title: "Pages",
     path: "",
     icon: <FileText />,
@@ -85,25 +90,52 @@ export const adminNavBarLinks = [
 ];
 export const adminCourseCardData = [
   {
-    imgSrc: "/disableNotebook.png",
-    altText: "Disable Notebook",
-    buttonText: "Create New",
-    icon: <SquarePlus />,
-    path: "/admin/course/create"
+    title: "Create New",
+    description: "Start creating new courses with interactive content, assessments, and multimedia resources.",
+    icon: <SquarePlus className="h-6 w-6" />,
+    path: "/admin/course/create",
+    features: [
+      "Course Structure & Modules",
+      "Interactive Content Creation",
+      "Assessment & Quiz Builder"
+    ],
+    buttonText: "Create New Course",
+    variant: "primary",
+    bgColor: "from-primary/5 to-transparent",
+    iconBg: "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground",
+    badgeColor: "bg-green-500"
   },
   {
-    imgSrc: "/draft.png",
-    altText: "Draft",
-    buttonText: "Draft",
-    icon: <LifeBuoy />,
-    path: "/admin/course/draft"
+    title: "Draft Courses",
+    description: "Continue working on your draft courses. Edit, review, and prepare them for publication.",
+    icon: <LifeBuoy className="h-6 w-6" />,
+    path: "/admin/course/draft",
+    features: [
+      "Work in Progress Courses",
+      "Auto-save & Version Control",
+      "Preview & Testing Tools"
+    ],
+    buttonText: "View Drafts",
+    variant: "secondary",
+    bgColor: "from-orange/10 to-transparent",
+    iconBg: "bg-orange-100 text-orange-600 group-hover:bg-orange-500 group-hover:text-white",
+    badgeColor: "bg-orange-500"
   },
   {
-    imgSrc: "/Notebook.png",
-    altText: "Notebook",
-    buttonText: "Published",
-    icon: <BookCheck />,
-    path: "/admin/course/published"
+    title: "Published Courses",
+    description: "Manage your live courses, track performance, and analyze student engagement and progress.",
+    icon: <BookCheck className="h-6 w-6" />,
+    path: "/admin/course/published",
+    features: [
+      "Live Course Management",
+      "Analytics & Performance",
+      "Student Progress Tracking"
+    ],
+    buttonText: "View Published",
+    variant: "outline",
+    bgColor: "from-secondary/10 to-transparent",
+    iconBg: "bg-secondary/20 text-secondary-foreground group-hover:bg-secondary group-hover:text-secondary-foreground",
+    badgeColor: "bg-blue-500"
   },
 ];
 
