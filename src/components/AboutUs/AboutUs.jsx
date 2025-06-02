@@ -19,6 +19,7 @@ import {
   Users,
   GraduationCap
 } from 'lucide-react';
+import Team from './team';
 
 const AboutUs = () => {
   const services = [
@@ -81,6 +82,8 @@ const AboutUs = () => {
           <Button variant="outline" size="lg">Learn More</Button>
         </div>
       </section>
+
+      <Team/>
 
       {/* Mission Section */}
       <section className="py-16 px-4">

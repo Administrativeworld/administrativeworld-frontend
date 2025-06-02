@@ -33,8 +33,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
+  const navigate = useNavigate();
   return (
     <footer className="border-t bg-secondary text-secondary-foreground">
       {/* Top Section with Slight Darker Background */}
@@ -42,7 +44,7 @@ const Footer = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
             {/* BookStore Info */}
-            <Card className="bg-background/50 backdrop-blur-sm border-none">
+            <Card className="bg-background/50 backdrop-blur-sm border-none" onClick={() => navigate("/home/store")}>
               <CardHeader className="space-y-1">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Book className="h-5 w-5 text-primary" />
@@ -71,7 +73,7 @@ const Footer = () => {
                   <nav className="space-y-1">
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80">
+                        <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80" onClick={() => navigate("/home/about")}>
                           <Info className="h-4 w-4" /> About Us
                         </Button>
                       </TooltipTrigger>
@@ -80,8 +82,8 @@ const Footer = () => {
 
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80">
-                          <GanttChartSquare className="h-4 w-4" /> How to work?
+                        <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80" onClick={() => navigate("/home/contact")}>
+                          <GanttChartSquare className="h-4 w-4" /> How to Contact?
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>Our process explained</TooltipContent>
@@ -89,7 +91,7 @@ const Footer = () => {
 
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80">
+                        <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80" onClick={() => navigate("/home/explore")}>
                           <Library className="h-4 w-4" /> Popular Course
                         </Button>
                       </TooltipTrigger>
@@ -98,7 +100,7 @@ const Footer = () => {
 
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80">
+                        <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80" onClick={() => navigate("/home/explore")}>
                           <HeartHandshake className="h-4 w-4" /> Service
                         </Button>
                       </TooltipTrigger>
@@ -120,15 +122,15 @@ const Footer = () => {
               </CardHeader>
               <CardContent>
                 <nav className="space-y-1">
-                  <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80">
-                    <BookOpen className="h-4 w-4" /> Categories
+                  <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80" onClick={() => navigate("/home/explore")}>
+                    <BookOpen className="h-4 w-4" /> Courses
                   </Button>
-                  <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80">
+                  {/*<Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80">
                     <Users className="h-4 w-4" /> Offline Course
                   </Button>
                   <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80">
                     <PlayCircle className="h-4 w-4" /> Video Course
-                  </Button>
+                  </Button>*/}
                 </nav>
               </CardContent>
             </Card>
@@ -143,10 +145,10 @@ const Footer = () => {
               </CardHeader>
               <CardContent>
                 <nav className="space-y-1">
-                  <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80">
-                    <BadgeHelp className="h-4 w-4" /> FAQ
+                  <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80" onClick={() => navigate("/home/contact")}>
+                    <BadgeHelp className="h-4 w-4" /> Contact Us
                   </Button>
-                  <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80">
+                  {/*<Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80">
                     <HelpCircle className="h-4 w-4" /> Help Center
                   </Button>
                   <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80">
@@ -154,7 +156,7 @@ const Footer = () => {
                   </Button>
                   <Button variant="ghost" className="w-full justify-start gap-2 px-2 h-8 hover:bg-background/80">
                     <Lock className="h-4 w-4" /> Privacy
-                  </Button>
+                  </Button>*/}
                 </nav>
               </CardContent>
             </Card>
