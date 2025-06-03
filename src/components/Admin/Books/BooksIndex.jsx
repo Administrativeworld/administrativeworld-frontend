@@ -9,15 +9,6 @@ import { useNavigate } from 'react-router-dom';
 
 function BooksIndex() {
   const navigate = useNavigate();
-  const handleCreateContent = () => {
-    // Navigate to create content page
-    console.log('Navigate to create content');
-  };
-
-  const handleSeePublished = () => {
-    // Navigate to published content page
-    console.log('Navigate to see published content');
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
@@ -110,10 +101,11 @@ function BooksIndex() {
                 </div>
               </div>
               <Button
-                onClick={handleSeePublished}
+                onClick={() => navigate('/admin/books/published')}
                 variant="secondary"
                 className="w-full group-hover:bg-secondary/80 transition-colors duration-300"
                 size="lg"
+
               >
                 View Published Content
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />

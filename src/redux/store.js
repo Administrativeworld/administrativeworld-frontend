@@ -18,7 +18,8 @@ import fetchEnrolledCourses from "./api/fetchEnrolledCourses";
 import updateProfile from "./api/updateProfileSlice";
 import uploadProfilePicture from "./api/displayPicture";
 import fetchLearningCourse from "./api/learningCourseSlice";
-import  manualEnrollStudent  from "./api/manaulEnroll";
+import manualEnrollStudent from "./api/manaulEnroll";
+import fetchBooks from "./api/booksSlice";
 
 export const reduxStore = configureStore({
   reducer: {
@@ -41,6 +42,7 @@ export const reduxStore = configureStore({
     updateProfile: updateProfile,
     displayPicture: uploadProfilePicture,
     fetchLearningCourse: fetchLearningCourse,
-    manualEnrollStudent: manualEnrollStudent
+    manualEnrollStudent: manualEnrollStudent,
+    books: fetchBooks
   }
 });

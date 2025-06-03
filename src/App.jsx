@@ -25,7 +25,10 @@ import ResetPasswordPage from "./components/Form/ResetPasswordPage.jsx";
 import AdminEnrollStudentForm from "./components/Admin/manualEnrollStudent.jsx";
 import Books from "./components/Admin/Books/Books.jsx";
 import CreateBook from "./components/Admin/Books/CreateBook/CreateBook.jsx";
-import BooksIndex from "./components/Admin/Books/CreateBook/BooksIndex.jsx";
+import BooksIndex from "./components/Admin/Books/BooksIndex.jsx";
+import ExploreBooks from "./components/Store/Store.jsx";
+import Store from "./components/Store/Store.jsx";
+import PublishedBooks from "./components/Admin/Books/Published/PublishedBooks.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -56,6 +59,7 @@ function App() {
           <Route path="user" element={loggedIn ? <UserProfile /> : < Navigate to="/login" />} />
           <Route path="about" element={<AboutUs />} />
           <Route path="contact" element={<ContactUs />} />
+          <Route path="store" element={<Store />} />
           {/* <Route path="exams" element={<ComingSoon />} /> */}
           {/* <Route path="notes" element={<ComingSoon />} /> */}
           {/* <Route path="test" element={<ComingSoon />} /> */}
@@ -84,11 +88,11 @@ function App() {
             <Route path="published" element={<Published />} >
               <Route path=":courseName" element={<PublishedCoursePage />} />
             </Route>
-
           </Route>
           <Route path="books" element={<Books />} >
             <Route index element={<BooksIndex />} />
             <Route path="create" element={<CreateBook />} />
+            <Route path="published" element={<PublishedBooks />}></Route>
           </Route>
           <Route path="enrolluser" element={<AdminEnrollStudentForm />} />
           <Route path="category" element={<Categories />}>
