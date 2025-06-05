@@ -5,7 +5,6 @@ import axios from 'axios';
 export const fetchBooks = createAsyncThunk(
   'books/fetchBooks',
   async (params, { rejectWithValue }) => {
-    console.log('Fetching books with params:', params);
 
     try {
       // Build query parameters properly
@@ -21,15 +20,13 @@ export const fetchBooks = createAsyncThunk(
       const queryString = queryParams.toString();
       const url = `${import.meta.env.VITE_BASE_URL}/store/getAllBooks${queryString ? `?${queryString}` : ''}`;
 
-      console.log('API URL:', url);
 
-      const response = await axios.post(url, {});
+      const response = await axios.post(url, {}, { withCredentials: true });
 
       // Validate response structure
       if (!response.data) {
         throw new Error('Invalid response format');
       }
-
       return response.data;
     } catch (err) {
       console.error('Error fetching books:', err);
