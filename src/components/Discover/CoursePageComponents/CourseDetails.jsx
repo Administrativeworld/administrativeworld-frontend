@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { BuyCourse } from "@/configs/capturePaymentSlice";
+import { buyCourse } from "@/configs/capturePaymentSlice";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -14,7 +14,9 @@ function CourseDetails({ whatYouWillLearn, thumbnail, price, tags, courseId }) {
 
   const handleEnrollClick = () => {
     if (loggedIn) {
-      BuyCourse(user.token, courseId, user, navigate, dispatch);
+      buyCourse(courseId, user, navigate,
+
+      );
     } else {
       navigate('/login');
     }

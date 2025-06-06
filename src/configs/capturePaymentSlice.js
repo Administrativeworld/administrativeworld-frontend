@@ -1,132 +1,150 @@
-import { toast } from "react-hot-toast"
+import { toast } from "react-hot-toast";
+import axios from "axios";
+import rzpLogo from "../../public/android-chrome-192x192.png";
 
-import rzpLogo from "../../public/android-chrome-192x192.png"
+// API endpoints
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const PAYMENT_ENDPOINTS = {
+  CAPTURE: `${BASE_URL}/payment/capturePayment`,
+  VERIFY: `${BASE_URL}/payment/verifyPayment`
+};
 
-import { paymentApi } from "../redux/api/pyamentApi"
-import axios from "axios"
-
-const COURSE_PAYMENT_API = `${import.meta.env.VITE_BASE_URL}/payment/capturePayment`
-const COURSE_VERIFY_API = `${import.meta.env.VITE_BASE_URL}/payment/verifyPayment`
-const SEND_PAYMENT_SUCCESS_EMAIL_API = `${import.meta.env.VITE_BASE_URL}/payment/sendPaymentSuccessEmail`
-
-// Load the Razorpay SDK from the CDN
-function loadScript(src) {
+// Load Razorpay SDK
+const loadRazorpayScript = () => {
   return new Promise((resolve) => {
-    const script = document.createElement("script")
-    script.src = src
-    script.onload = () => {
-      resolve(true)
-    }
-    script.onerror = () => {
-      resolve(false)
-    }
-    document.body.appendChild(script)
-  })
-}
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
 
-// Buy the Course
-// Buy the Course
-export async function BuyCourse(
-  token,
-  courseId,
-  user_details,
-  navigate,
-  dispatch
-) {
-  const toastId = toast.loading("Loading...")
+// Main function to buy course
+export async function buyCourse(courseId, userDetails, navigate) {
+  const toastId = toast.loading("Processing payment...");
+
   try {
-    // Loading the script of Razorpay SDK
-    const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js")
-
-    if (!res) {
-      toast.error(
-        "Razorpay SDK failed to load. Check your Internet Connection."
-      )
-      return
+    // Load Razorpay SDK
+    const scriptLoaded = await loadRazorpayScript();
+    if (!scriptLoaded) {
+      toast.error("Payment gateway failed to load. Please check your internet connection.");
+      return;
     }
 
-    // Initiating the Order in Backend with courseId
-    const orderResponse = await axios.post(COURSE_PAYMENT_API, { courseId: courseId }, { withCredentials: true })
-    if (!orderResponse.data.success) {
-      throw new Error(orderResponse.data.message)
-    }
-    console.log("PAYMENT RESPONSE FROM BACKEND............", orderResponse.data)
+    // Create payment order
+    const orderResponse = await createPaymentOrder(courseId);
+    console.log("Payment order created:", orderResponse);
 
-    // Opening the Razorpay SDK
-    const options = {
+    // Configure Razorpay options
+    const razorpayOptions = {
       key: import.meta.env.VITE_RAZORPAY_KEY,
-      currency: orderResponse.data.data.currency,
-      amount: `${orderResponse.data.data.amount}`,
-      order_id: orderResponse.data.data.id,
+      amount: orderResponse.amount,
+      currency: orderResponse.currency,
+      order_id: orderResponse.id,
       name: "Administrative World",
-      description: "Thank you for Purchasing the Course.",
+      description: "Course Purchase",
       image: rzpLogo,
       prefill: {
-        name: `${user_details.firstName} ${user_details.lastName}`,
-        email: user_details.email,
+        name: `${userDetails.firstName} ${userDetails.lastName}`,
+        email: userDetails.email,
       },
-      handler: function (response) {
-        sendPaymentSuccessEmail(response, orderResponse.data.data.amount, token)
-        verifyPayment({ ...response, courseId }, token, navigate, dispatch) // pass courseId instead of courses
-      },
-    }
-    const paymentObject = new window.Razorpay(options)
+      handler: (response) => handlePaymentSuccess(response, courseId, navigate),
+      modal: {
+        ondismiss: () => {
+          toast.error("Payment cancelled");
+        }
+      }
+    };
 
-    paymentObject.open()
-    paymentObject.on("payment.failed", function (response) {
-      toast.error("Oops! Payment Failed.")
-      console.log(response.error)
-    })
+    // Open Razorpay checkout
+    const paymentObject = new window.Razorpay(razorpayOptions);
+    paymentObject.open();
+
+    // Handle payment failure
+    paymentObject.on("payment.failed", (response) => {
+      console.error("Payment failed:", response.error);
+      toast.error("Payment failed. Please try again.");
+    });
+
   } catch (error) {
-    console.log("PAYMENT API ERROR............", error)
-    toast.error("Could Not make Payment.")
+    console.error("Payment initiation error:", error);
+    toast.error(error.message || "Failed to initiate payment");
+  } finally {
+    toast.dismiss(toastId);
   }
-  toast.dismiss(toastId)
 }
 
-
-// Verify the Payment
-async function verifyPayment(bodyData, navigate, courseId) {
-  const toastId = toast.loading("Verifying Payment...")
-  // dispatch(setPaymentLoading(true))
+// Create payment order
+async function createPaymentOrder(courseId) {
   try {
-
-    const response = await axios.post(COURSE_VERIFY_API, bodyData, {
-      withCredentials: true
-    })
-    console.log("VERIFY PAYMENT RESPONSE FROM BACKEND............", response)
+    const response = await axios.post(
+      PAYMENT_ENDPOINTS.CAPTURE,
+      { courseId: courseId },
+      { withCredentials: true }
+    );
 
     if (!response.data.success) {
-      throw new Error(response.data.message)
+      throw new Error(response.data.message);
     }
 
-    toast.success("Payment Successful. You are Added to the course ")
-    navigate(`/home/enrolled?id=${bodyData.courseId}`)
-    // dispatch(resetCart())
+    return response.data.data;
   } catch (error) {
-    console.log("PAYMENT VERIFY ERROR............", error)
-    toast.error("Could Not Verify Payment.")
+    throw new Error(error.response?.data?.message || "Failed to create payment order");
   }
-  toast.dismiss(toastId)
-  // dispatch(setPaymentLoading(false))
 }
 
-// Send the Payment Success Email
-async function sendPaymentSuccessEmail(response, amount, token) {
+// Handle successful payment
+async function handlePaymentSuccess(paymentResponse, courseId, navigate) {
+  const toastId = toast.loading("Verifying payment and enrolling...");
+
   try {
-    await paymentApi(
-      "POST",
-      SEND_PAYMENT_SUCCESS_EMAIL_API,
-      {
-        orderId: response.razorpay_order_id,
-        paymentId: response.razorpay_payment_id,
-        amount,
-      },
-      {
-        Authorization: `Bearer ${token}`,
-      }
-    )
+    // Verify payment and enroll student (backend handles enrollment + emails)
+    await verifyPaymentAndEnroll(paymentResponse, courseId);
+
+    toast.success("Payment successful! You are now enrolled in the course.");
+    navigate(`/home/enrolled?id=${courseId}`);
+
   } catch (error) {
-    console.log("PAYMENT SUCCESS EMAIL ERROR............", error)
+    console.error("Payment verification error:", error);
+    toast.error("Payment verification failed. Please contact support.");
+  } finally {
+    toast.dismiss(toastId);
   }
+}
+
+// Verify payment and enroll student
+async function verifyPaymentAndEnroll(paymentResponse, courseId) {
+  try {
+    const verificationData = {
+      razorpay_order_id: paymentResponse.razorpay_order_id,
+      razorpay_payment_id: paymentResponse.razorpay_payment_id,
+      razorpay_signature: paymentResponse.razorpay_signature,
+      courseId
+    };
+
+    const response = await axios.post(
+      PAYMENT_ENDPOINTS.VERIFY,
+      verificationData,
+      { withCredentials: true }
+    );
+
+    if (!response.data.success) {
+      throw new Error(response.data.message);
+    }
+
+    console.log("Payment verified and student enrolled successfully");
+    return response.data;
+
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Payment verification failed");
+  }
+}
+
+// Utility function to format currency
+export function formatCurrency(amount) {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR'
+  }).format(amount / 100);
 }

@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { initiateBookPurchase } from '@/configs/captureBookPayment';
 import toast from 'react-hot-toast';
 import { fetchBooks } from '@/redux/api/booksSlice';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 
 
@@ -110,6 +111,7 @@ const InfoItem = ({ icon: Icon, label, value, badge = false, badgeColor = "defau
 
 const BookCard = ({ book, onPreview, onPurchase, className = "" }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [showDetailsPopup, setShowDetailsPopup] = useState(false);
   const [showPurchasePopup, setShowPurchasePopup] = useState(false);
   const rating = 4.5;
@@ -167,42 +169,48 @@ const BookCard = ({ book, onPreview, onPurchase, className = "" }) => {
   };
 
   const handleConfirmPurchase = () => {
-    setShowPurchasePopup(false);
-    onPurchase?.(book);
 
-    let loadingToast;
+    if (!loggedIn) {
+      navigate("/login")
+      return;
+    } else {
+      setShowPurchasePopup(false);
+      onPurchase?.(book);
 
-    try {
-      initiateBookPurchase({
-        bookId: book._id,
-        bookTitle: book.title || "N/A",
-        bookPrice: book.price || "N/A",
-        userDetails: {
-          name: `${user.firstName} ${user.lastName}` || "N/A",
-          email: user.email || "N/A",
-          phone: user.contactNumber || "N/A"
-        },
-        onSuccess: (successMessage) => {
-          if (loadingToast) toast.dismiss(loadingToast);
-          toast.success(successMessage);
-          dispatch(fetchBooks(filters));
-        },
-        onError: (errorMessage) => {
-          if (loadingToast) toast.dismiss(loadingToast);
-          toast.error(errorMessage);
-        },
-        onLoading: (isLoading) => {
-          if (isLoading) {
-            loadingToast = toast.loading('Processing payment...');
-          } else {
+      let loadingToast;
+
+      try {
+        initiateBookPurchase({
+          bookId: book._id,
+          bookTitle: book.title || "N/A",
+          bookPrice: book.price || "N/A",
+          userDetails: {
+            name: `${user.firstName} ${user.lastName}` || "N/A",
+            email: user.email || "N/A",
+            phone: user.contactNumber || "N/A"
+          },
+          onSuccess: (successMessage) => {
             if (loadingToast) toast.dismiss(loadingToast);
+            toast.success(successMessage);
+            dispatch(fetchBooks(filters));
+          },
+          onError: (errorMessage) => {
+            if (loadingToast) toast.dismiss(loadingToast);
+            toast.error(errorMessage);
+          },
+          onLoading: (isLoading) => {
+            if (isLoading) {
+              loadingToast = toast.loading('Processing payment...');
+            } else {
+              if (loadingToast) toast.dismiss(loadingToast);
+            }
           }
-        }
-      });
-    } catch (error) {
-      console.log(error);
-      if (loadingToast) toast.dismiss(loadingToast);
-      toast.error('Failed to initiate payment');
+        });
+      } catch (error) {
+        console.log(error);
+        if (loadingToast) toast.dismiss(loadingToast);
+        toast.error('Failed to initiate payment');
+      }
     }
   };
   const handleFavorite = (e) => {

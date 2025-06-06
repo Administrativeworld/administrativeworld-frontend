@@ -12,10 +12,12 @@ import EditProfileDialog from "./EditProfileDialog";
 import { setProfileEditDialog } from "@/redux/global/GlobalVar";
 import Logout from "./Logout";
 import BookCard from "@/components/Store/BookCard/BookCard";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function UserProfile() {
   const { user } = useSelector((state) => state.authUser);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { enrolledCourses } = useSelector((state) => state.enrolledCourses);
   const { profileEditDialog } = useSelector((state) => state.globalVar);
   const [viewMode, setViewMode] = useState('grid');
@@ -186,7 +188,12 @@ export default function UserProfile() {
                       </div>
                       <h3 className="text-base sm:text-lg font-semibold mb-2">No materials purchased yet</h3>
                       <p className="text-sm sm:text-base text-muted-foreground px-4 mb-4">Browse our material store to enhance your learning</p>
-                      <Button className="text-sm" size="sm">
+                      <Button
+                        className="text-sm"
+                        size="sm"
+                        onClick={() => navigate('/home/store')}
+
+                      >
                         Browse Materials
                       </Button>
                     </div>
@@ -204,6 +211,6 @@ export default function UserProfile() {
           setOpen={(open) => dispatch(setProfileEditDialog(open))}
         />
       </div>
-    </div>
+    </div >
   );
 }
