@@ -6,25 +6,23 @@ import { Badge } from "@/components/ui/badge";
 import { Pencil, Mail, Calendar, BookOpen, GraduationCap, Library, ShoppingBag } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { fetchEnrolledCourses } from "@/redux/api/fetchEnrolledCourses";
-import EnrolledCourseCard from "./EnrolledCourseCard";
+// import EnrolledCourseCard from "./EnrolledCourseCard";
 import EditProfileDialog from "./EditProfileDialog";
 import { setProfileEditDialog } from "@/redux/global/GlobalVar";
 import Logout from "./Logout";
 import BookCard from "@/components/Store/BookCard/BookCard";
 import { Navigate, useNavigate } from "react-router-dom";
+import CourseCard from "../Courses/CourseCard";
 
 export default function UserProfile() {
   const { user } = useSelector((state) => state.authUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { enrolledCourses } = useSelector((state) => state.enrolledCourses);
   const { profileEditDialog } = useSelector((state) => state.globalVar);
   const [viewMode, setViewMode] = useState('grid');
 
-  useEffect(() => {
-    dispatch(fetchEnrolledCourses());
-  }, [dispatch]);
+  // Get enrolled courses from user.courses instead of Redux enrolledCourses
+  const enrolledCourses = user?.courses || [];
 
   // Handler functions for BookCard
   const handlePreview = (bookId) => {
@@ -147,12 +145,13 @@ export default function UserProfile() {
               {/* Enrolled Courses Tab */}
               <TabsContent value="courses" className="px-3 sm:px-6 pb-3 sm:pb-6 pt-2 sm:pt-4 mt-0">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
-                  {enrolledCourses?.map((course) => (
+                  {user.courses?.map((course) => (
                     <div key={course._id} className="w-full">
-                      <EnrolledCourseCard
+                      <CourseCard
+                        key={course._id}
                         course={course}
-                        ButtonName="Continue Learning"
                       />
+
                     </div>
                   ))}
                 </div>

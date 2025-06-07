@@ -23,6 +23,8 @@ import { initiateBookPurchase } from '@/configs/captureBookPayment';
 import toast from 'react-hot-toast';
 import { fetchBooks } from '@/redux/api/booksSlice';
 import { Navigate, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import LoaderSpinner from '@/components/Loaders/LoaderSpinner';
 
 
 
@@ -117,10 +119,11 @@ const BookCard = ({ book, onPreview, onPurchase, className = "" }) => {
   const rating = 4.5;
   const { loggedIn, user } = useSelector((state) => state.authUser);
   const { books, loading, filters, meta } = useSelector((state) => state.books);
+  const [downloadLoading, setDownloadLoading] = useState(false)
 
 
-  const isBought = loggedIn && user && book.studentsPurchase?.length
-    ? book.studentsPurchase.some((student) => student?._id === user._id)
+  const isBought = loggedIn && user && user.materials?.length
+    ? user.materials.some((material) => material?._id === book._id)
     : false;
   // Utility Functions
   const formatPrice = (price) => {
@@ -222,7 +225,82 @@ const BookCard = ({ book, onPreview, onPurchase, className = "" }) => {
     e.stopPropagation();
     // Handle share logic
   };
+  const handlePurchasedDownload = async (bookId) => {
+    try {
+      setDownloadLoading(true)
+      // Generate download token
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/store/generateStoreDownloadToken`,
+        { bookId },
+        {
+          withCredentials: true,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
 
+      // For axios, check response.status instead of response.ok
+      if (response.status < 200 || response.status >= 300) {
+        throw new Error(response.data?.message || 'Failed to generate download token');
+      }
+
+      console.log("downloadResponse", response.data.downloadUrl);
+
+      // Extract downloadUrl from axios response.data
+      const { downloadUrl } = response.data;
+
+      if (!downloadUrl) {
+        throw new Error('Download URL not received from server');
+      }
+
+      // Trigger download - construct full URL
+      const fullDownloadUrl = `${import.meta.env.VITE_BASE_URL}/store/${downloadUrl}`;
+      window.location.href = fullDownloadUrl;
+
+      console.log('Download started successfully');
+
+    } catch (error) {
+      console.error('Download failed:', error);
+
+      // Better error handling for axios errors
+      let errorMessage = 'Download failed. Please try again.';
+
+      if (error.response) {
+        // Server responded with error status
+        const status = error.response.status;
+        const serverMessage = error.response.data?.message;
+
+        switch (status) {
+          case 400:
+            errorMessage = serverMessage || 'Invalid request. Please check the book ID.';
+            break;
+          case 401:
+            errorMessage = 'Please log in to download materials.';
+            break;
+          case 403:
+            errorMessage = 'You do not have permission to download this material.';
+            break;
+          case 404:
+            errorMessage = 'The requested material could not be found.';
+            break;
+          case 500:
+            errorMessage = 'Server error. Please try again later.';
+            break;
+          default:
+            errorMessage = serverMessage || `Error ${status}: ${error.message}`;
+        }
+      } else if (error.request) {
+        // Network error
+        errorMessage = 'Network error. Please check your connection.';
+      } else {
+        // Other error
+        errorMessage = error.message;
+      }
+
+      alert('Download failed: ' + errorMessage);
+    } finally {
+      setDownloadLoading(false);
+    }
+  };
   // Defensive check
   if (!book || typeof book !== "object") return null;
 
@@ -330,13 +408,20 @@ const BookCard = ({ book, onPreview, onPurchase, className = "" }) => {
               {isBought ? (
                 <Button
                   className="w-full py-2 md:w-1/2 bg-green-400"
+                  disabled={downloadLoading}
                   onClick={(e) => {
                     e.stopPropagation();
-                    onPurchase?.(book);
+                    handlePurchasedDownload(book._id);
                   }}
                 >
                   <Download className="w-3 h-3 mr-1" />
-                  Access
+                  {downloadLoading ? (
+                    <>
+                      Access <LoaderSpinner />
+                    </>
+                  ) : (
+                    "Access"
+                  )}
                 </Button>
               ) : (
                 <Button

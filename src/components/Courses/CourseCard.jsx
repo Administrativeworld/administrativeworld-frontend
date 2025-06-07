@@ -13,11 +13,12 @@ function CourseCard({ course, ButtonName, path }) {
 
   // Defensive check: return nothing if course is missing
   if (!course || typeof course !== "object") return null;
-
-  const isEnrolled =
-    loggedIn && user && course.studentsEnroled?.length
-      ? course.studentsEnroled.some((student) => student?._id === user._id)
+  console.log("userFromCourseCard", user)
+  const isEnrolled = (courseId) => {
+    return loggedIn && user && user.courses?.length
+      ? user.courses.some((course) => course._id.toString() === courseId.toString())
       : false;
+  };
 
   return (
     <div className="flex justify-center">
@@ -97,7 +98,7 @@ function CourseCard({ course, ButtonName, path }) {
             >
               Inspect
             </Button>
-          ) : isEnrolled ? (
+          ) : isEnrolled(course._id) ? (
             <Button
               className="w-full mt-auto font-medium py-1.5 rounded-md transition-colors duration-200"
               variant="outline"
@@ -130,11 +131,6 @@ CourseCard.propTypes = {
     courseDescription: PropTypes.string.isRequired,
 
     tag: PropTypes.arrayOf(PropTypes.string).isRequired,
-    studentsEnroled: PropTypes.arrayOf(
-      PropTypes.shape({
-        _id: PropTypes.string.isRequired,
-      })
-    ).isRequired,
     instructor: PropTypes.shape({
       firstName: PropTypes.string,
       lastName: PropTypes.string,

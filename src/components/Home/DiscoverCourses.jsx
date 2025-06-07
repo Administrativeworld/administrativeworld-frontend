@@ -482,7 +482,7 @@ function DiscoverCourses() {
                   key={course._id}
                   course={course}
                   ButtonName="Enroll Now"
-                  className={viewMode === 'list' ? 'flex-row' : ''}
+                  path={`/home/course?id=${course._id}`} // Add this required prop
                 />
               ))
             ) : (
