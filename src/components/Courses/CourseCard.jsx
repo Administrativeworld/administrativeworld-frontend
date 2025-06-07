@@ -52,7 +52,7 @@ function CourseCard({ course, ButtonName, path }) {
               {course.courseName}
             </h2>
             <p className="text-md font-bold text-customOrange ml-2">
-              {isEnrolled
+              {isEnrolled(course._id)
                 ? "Enrolled"
                 : `₹${course.price?.toLocaleString("en-IN") ?? "0"}`}
             </p>
