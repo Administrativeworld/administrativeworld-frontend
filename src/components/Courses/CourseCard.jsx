@@ -13,7 +13,6 @@ function CourseCard({ course, ButtonName, path }) {
 
   // Defensive check: return nothing if course is missing
   if (!course || typeof course !== "object") return null;
-  console.log("userFromCourseCard", user)
   const isEnrolled = (courseId) => {
     return loggedIn && user && user.courses?.length
       ? user.courses.some((course) => course._id.toString() === courseId.toString())

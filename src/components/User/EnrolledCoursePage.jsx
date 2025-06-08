@@ -2,6 +2,7 @@ import { fetchLearningCourse } from "@/redux/api/learningCourseSlice";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
+import axios from "axios";
 
 // UI Components
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-
+import toast from "react-hot-toast";
 // Icons
 import {
   ChevronLeft,
@@ -27,9 +28,10 @@ import {
   RotateCcw,
   Volume2,
   Maximize,
+  CheckCheck,
 } from "lucide-react";
 
-// Custom Player Component (will be defined below)
+// Custom Player Component
 import YouTubePlayer from "../Player/YouTubePlayer";
 
 function EnrolledCoursePage() {
@@ -45,32 +47,34 @@ function EnrolledCoursePage() {
     id: "",
     title: "",
     description: "",
+    subsectionId: "",
   });
   const [activeTab, setActiveTab] = useState("content");
   const [expandedSections, setExpandedSections] = useState({});
 
-  // State for YouTube player internal progress
+  // State for course progress
+  const [progressPercentage, setProgressPercentage] = useState(0);
+  const [completedVideos, setCompletedVideos] = useState([]);
+  const [isMarkingComplete, setIsMarkingComplete] = useState(false);
+
+  // State for YouTube player
   const [playerState, setPlayerState] = useState({
     playing: false,
     currentTime: 0,
     duration: 0,
-    loaded: 0,
   });
-  const playerRef = useRef(null); // Ref to hold the YouTube player instance
+  const playerRef = useRef(null);
 
   // --- Utility Functions ---
 
-  // Extracts YouTube ID from various URL formats
   const extractYouTubeId = useCallback((url) => {
     if (!url) return "";
-
     const regExp =
       /(?:http?s?:\/\/)?(?:www\.)?(?:m\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|)([\w-]{11})(?:\S+)?/;
     const match = url.match(regExp);
     return match && match[1].length === 11 ? match[1] : "";
   }, []);
 
-  // Formats multiline descriptions into paragraphs
   const formatDescription = useCallback((text) => {
     if (!text) return "";
     return text.split("\n").map((line, i) => (
@@ -80,25 +84,80 @@ function EnrolledCoursePage() {
     ));
   }, []);
 
-  // --- Effects for Data Loading and Initial Setup ---
+  // --- API Functions ---
 
-  // Fetch course data on courseId change
+  const updateCourseProgress = async (subsectionId) => {
+    try {
+      setIsMarkingComplete(true);
+      console.log({ courseId: courseId, subsectionId: subsectionId })
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/courses/updateCourseProgress`, {
+        courseId,
+        subsectionId,
+      }, { withCredentials: true });
+
+      if (response.status === 200) {
+        // Update local state
+        setCompletedVideos(prev => [...prev, subsectionId]);
+
+        // Fetch updated progress percentage
+        await fetchProgressPercentage();
+
+        // Fixed toast call - use react-hot-toast syntax
+        toast.success("Lesson marked as complete!");
+      }
+    } catch (error) {
+      console.error("Error updating course progress:", error);
+      // Fixed toast call - use react-hot-toast syntax
+      toast.error(error.response?.data?.error || "Failed to update progress");
+    } finally {
+      setIsMarkingComplete(false);
+    }
+  };
+
+  const fetchProgressPercentage = async () => {
+    try {
+      console.log("courseId", courseId)
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/courses/getProgressPercentage`, {
+        courseId,
+      }, {
+        withCredentials: true,
+      }
+      );
+
+      if (response.status === 200) {
+        setProgressPercentage(response.data.data || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching progress percentage:", error);
+    }
+  };
+
+  // --- Effects ---
+
+  // Fetch course data
   useEffect(() => {
     if (courseId) {
-      dispatch(fetchLearningCourse({ courseId: courseId }));
+      dispatch(fetchLearningCourse({ courseId }));
+      fetchProgressPercentage();
     }
   }, [courseId, dispatch]);
 
-  // Initialize expanded sections and set initial active video
+  // Initialize component state
   useEffect(() => {
     if (data?.courseDetails?.courseContent) {
+      // Set completed videos from API response
+      if (data.completedVideos) {
+        setCompletedVideos(data.completedVideos);
+      }
+
+      // Initialize expanded sections
       const initialExpanded = {};
       data.courseDetails.courseContent.forEach((section, index) => {
-        initialExpanded[index] = true; // Expand all sections by default
+        initialExpanded[index] = true;
       });
       setExpandedSections(initialExpanded);
 
-      // Set the first available video as active
+      // Set first available video as active
       for (let i = 0; i < data.courseDetails.courseContent.length; i++) {
         const section = data.courseDetails.courseContent[i];
         if (section.subSection && section.subSection.length > 0) {
@@ -107,79 +166,83 @@ function EnrolledCoursePage() {
           setActiveSubSection(0);
           setActiveVideoDetails({
             id: extractYouTubeId(firstSubSection.videoUrl),
-            title: firstSubSection.title,
-            description: firstSubSection.description,
+            title: firstSubSection.title || "",
+            description: firstSubSection.description || "",
+            subsectionId: firstSubSection._id || "",
           });
-          break; // Found the first video, exit loop
+          break;
         }
       }
     }
   }, [data, extractYouTubeId]);
 
-  // --- Handlers for Video Selection and Navigation ---
+  // --- Handlers ---
 
   const handleVideoSelection = useCallback(
     (sectionIndex, subSectionIndex) => {
-      const section = data.courseDetails.courseContent[sectionIndex];
-      const subSection = section.subSection[subSectionIndex];
+      const section = data?.courseDetails?.courseContent?.[sectionIndex];
+      const subSection = section?.subSection?.[subSectionIndex];
+
+      if (!section || !subSection) return;
+
       const videoId = extractYouTubeId(subSection.videoUrl);
 
       setActiveSection(sectionIndex);
       setActiveSubSection(subSectionIndex);
       setActiveVideoDetails({
         id: videoId,
-        title: subSection.title,
-        description: subSection.description,
+        title: subSection.title || "",
+        description: subSection.description || "",
+        subsectionId: subSection._id || "",
       });
 
-      // Reset player state to ensure it starts fresh when a new video is selected
       setPlayerState({
         playing: false,
         currentTime: 0,
         duration: 0,
-        loaded: 0,
       });
     },
     [data, extractYouTubeId]
   );
 
+  const toggleSection = (sectionIndex) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [sectionIndex]: !prev[sectionIndex]
+    }));
+  };
+
   const navigateToPrevious = useCallback(() => {
+    if (!data?.courseDetails?.courseContent) return;
+
     let newSectionIndex = activeSection;
     let newSubSectionIndex = activeSubSection - 1;
 
     if (newSubSectionIndex < 0) {
-      // If at start of section, find previous section with videos
       for (let i = activeSection - 1; i >= 0; i--) {
-        if (data.courseDetails.courseContent[i].subSection?.length > 0) {
+        if (data.courseDetails.courseContent[i]?.subSection?.length > 0) {
           newSectionIndex = i;
-          newSubSectionIndex =
-            data.courseDetails.courseContent[i].subSection.length - 1;
+          newSubSectionIndex = data.courseDetails.courseContent[i].subSection.length - 1;
           break;
         }
       }
     }
 
-    if (
-      data.courseDetails.courseContent[newSectionIndex]?.subSection?.[
-      newSubSectionIndex
-      ]
-    ) {
+    if (data.courseDetails.courseContent[newSectionIndex]?.subSection?.[newSubSectionIndex]) {
       handleVideoSelection(newSectionIndex, newSubSectionIndex);
     }
   }, [activeSection, activeSubSection, data, handleVideoSelection]);
 
   const navigateToNext = useCallback(() => {
+    if (!data?.courseDetails?.courseContent) return;
+
     let newSectionIndex = activeSection;
     let newSubSectionIndex = activeSubSection + 1;
     const currentSection = data.courseDetails.courseContent[activeSection];
 
-    if (
-      !currentSection.subSection ||
-      newSubSectionIndex >= currentSection.subSection.length
-    ) {
-      // If at end of current section, find next section with videos
+    if (!currentSection?.subSection || newSubSectionIndex >= currentSection.subSection.length) {
       for (let i = activeSection + 1; i < data.courseDetails.courseContent.length; i++) {
-        if (data.courseDetails.courseContent[i].subSection?.length > 0) {
+        if (data.courseDetails.courseContent[i]?.subSection?.length > 0) {
           newSectionIndex = i;
           newSubSectionIndex = 0;
           break;
@@ -187,11 +250,7 @@ function EnrolledCoursePage() {
       }
     }
 
-    if (
-      data.courseDetails.courseContent[newSectionIndex]?.subSection?.[
-      newSubSectionIndex
-      ]
-    ) {
+    if (data.courseDetails.courseContent[newSectionIndex]?.subSection?.[newSubSectionIndex]) {
       handleVideoSelection(newSectionIndex, newSubSectionIndex);
     }
   }, [activeSection, activeSubSection, data, handleVideoSelection]);
@@ -199,146 +258,158 @@ function EnrolledCoursePage() {
   // --- YouTube Player Event Handlers ---
 
   const onPlayerReady = useCallback((event) => {
-    playerRef.current = event.target; // Store the player instance
-    // You could set initial volume or check for autoplay here if needed
+    playerRef.current = event.target;
   }, []);
 
-  const onPlayerStateChange = useCallback(
-    (event) => {
-      // YT.PlayerState is an enum for player states
-      // -1 (unstarted)
-      // 0 (ended)
-      // 1 (playing)
-      // 2 (paused)
-      // 3 (buffering)
-      // 5 (video cued)
+  const onPlayerStateChange = useCallback((event) => {
+    if (!window.YT) return;
 
-      setPlayerState((prev) => ({
-        ...prev,
-        playing: event.data === window.YT.PlayerState.PLAYING,
-      }));
+    setPlayerState(prev => ({
+      ...prev,
+      playing: event.data === window.YT.PlayerState.PLAYING,
+    }));
 
-      // If playing, continuously update current time and duration
-      if (event.data === window.YT.PlayerState.PLAYING) {
-        // Clear any existing interval to prevent multiple intervals running
-        if (playerRef.current.updateInterval) {
-          clearInterval(playerRef.current.updateInterval);
-        }
-        playerRef.current.updateInterval = setInterval(() => {
-          if (playerRef.current) {
-            setPlayerState((prev) => ({
-              ...prev,
-              currentTime: playerRef.current.getCurrentTime(),
-              duration: playerRef.current.getDuration(),
-              loaded: playerRef.current.getVideoLoadedFraction() * 100,
-            }));
-          }
-        }, 1000); // Update every second
-      } else {
-        // Clear interval when not playing
-        if (playerRef.current.updateInterval) {
-          clearInterval(playerRef.current.updateInterval);
-          playerRef.current.updateInterval = null; // Clean up reference
-        }
-      }
-
-      // If video ended
-      if (event.data === window.YT.PlayerState.ENDED) {
-        // TODO: Dispatch action to mark video as completed
-        // For example: dispatch(markVideoAsCompleted({ courseId, videoId: activeVideoDetails.id }));
-        console.log(`Video ${activeVideoDetails.id} ended. Marking as complete.`);
-
-        // Auto navigate to next video if not the last one
-        if (!isNextDisabled()) {
-          navigateToNext();
-        }
-      }
-    },
-    [activeVideoDetails.id, navigateToNext]
-  );
-
-  // Clean up interval when component unmounts
-  useEffect(() => {
-    return () => {
-      if (playerRef.current && playerRef.current.updateInterval) {
+    if (event.data === window.YT.PlayerState.PLAYING) {
+      if (playerRef.current?.updateInterval) {
         clearInterval(playerRef.current.updateInterval);
       }
-    };
-  }, []);
+      playerRef.current.updateInterval = setInterval(() => {
+        if (playerRef.current && typeof playerRef.current.getCurrentTime === 'function') {
+          setPlayerState(prev => ({
+            ...prev,
+            currentTime: playerRef.current.getCurrentTime() || 0,
+            duration: playerRef.current.getDuration() || 0,
+          }));
+        }
+      }, 1000);
+    } else {
+      if (playerRef.current?.updateInterval) {
+        clearInterval(playerRef.current.updateInterval);
+        playerRef.current.updateInterval = null;
+      }
+    }
 
+    if (event.data === window.YT.PlayerState.ENDED) {
+      console.log(`Video ${activeVideoDetails.id} ended.`);
+      if (!isNextDisabled()) {
+        navigateToNext();
+      }
+    }
+  }, [activeVideoDetails.id, navigateToNext]);
 
-  // --- Custom Player Controls ---
+  // Cleanup interval on unmount
+  useEffect(() => {
+    if (playerRef.current?.updateInterval) {
+      clearInterval(playerRef.current.updateInterval);
+      playerRef.current.updateInterval = null;
+    }
+
+    // Reset player state when video changes
+    setPlayerState({
+      playing: false,
+      currentTime: 0,
+      duration: 0,
+    });
+  }, [activeVideoDetails.id]);
+
+  // --- Player Controls ---
 
   const togglePlayPause = () => {
     if (playerRef.current) {
-      if (playerState.playing) {
-        playerRef.current.pauseVideo();
-      } else {
-        playerRef.current.playVideo();
+      try {
+        if (playerState.playing) {
+          if (typeof playerRef.current.pauseVideo === 'function') {
+            playerRef.current.pauseVideo();
+          }
+        } else {
+          if (typeof playerRef.current.playVideo === 'function') {
+            playerRef.current.playVideo();
+          }
+        }
+      } catch (error) {
+        console.error('Error controlling video playback:', error);
       }
     }
   };
-
+  const stopVideo = () => {
+    if (playerRef.current) {
+      try {
+        if (typeof playerRef.current.pauseVideo === 'function') {
+          playerRef.current.pauseVideo();
+        }
+        // Optionally seek to beginning
+        if (typeof playerRef.current.seekTo === 'function') {
+          playerRef.current.seekTo(0);
+        }
+      } catch (error) {
+        console.error('Error stopping video:', error);
+      }
+    }
+  };
   const restartVideo = () => {
     if (playerRef.current) {
-      playerRef.current.seekTo(0);
-      playerRef.current.playVideo();
+      try {
+        if (typeof playerRef.current.seekTo === 'function') {
+          playerRef.current.seekTo(0);
+        }
+        if (typeof playerRef.current.playVideo === 'function') {
+          playerRef.current.playVideo();
+        }
+      } catch (error) {
+        console.error('Error restarting video:', error);
+      }
     }
   };
 
   const toggleFullscreen = () => {
-    if (playerRef.current && playerRef.current.getIframe()) {
-      const iframe = playerRef.current.getIframe();
-      if (iframe.requestFullscreen) {
-        iframe.requestFullscreen();
-      } else if (iframe.mozRequestFullScreen) {
-        /* Firefox */
-        iframe.mozRequestFullScreen();
-      } else if (iframe.webkitRequestFullscreen) {
-        /* Chrome, Safari and Opera */
-        iframe.webkitRequestFullscreen();
-      } else if (iframe.msRequestFullscreen) {
-        /* IE/Edge */
-        iframe.msRequestFullscreen();
+    if (playerRef.current?.getIframe) {
+      try {
+        const iframe = playerRef.current.getIframe();
+        if (iframe?.requestFullscreen) {
+          iframe.requestFullscreen();
+        } else if (iframe?.mozRequestFullScreen) {
+          iframe.mozRequestFullScreen();
+        } else if (iframe?.webkitRequestFullscreen) {
+          iframe.webkitRequestFullscreen();
+        } else if (iframe?.msRequestFullscreen) {
+          iframe.msRequestFullscreen();
+        }
+      } catch (error) {
+        console.error('Error toggling fullscreen:', error);
       }
     }
   };
 
-  // --- Navigation Button Logic ---
+  // --- Navigation Logic ---
 
   const isPreviousDisabled = useCallback(() => {
     if (!data?.courseDetails?.courseContent) return true;
-    if (activeSubSection > 0) return false; // If there's a previous video in current section
+    if (activeSubSection > 0) return false;
 
-    // Check if there are any previous sections with videos
     for (let i = activeSection - 1; i >= 0; i--) {
-      if (data.courseDetails.courseContent[i].subSection?.length > 0) {
+      if (data.courseDetails.courseContent[i]?.subSection?.length > 0) {
         return false;
       }
     }
-    return true; // No previous video found
+    return true;
   }, [activeSection, activeSubSection, data]);
 
   const isNextDisabled = useCallback(() => {
     if (!data?.courseDetails?.courseContent) return true;
     const currentSection = data.courseDetails.courseContent[activeSection];
-    if (
-      currentSection.subSection &&
-      activeSubSection < currentSection.subSection.length - 1
-    ) {
-      return false; // If there's a next video in current section
+    if (currentSection?.subSection && activeSubSection < currentSection.subSection.length - 1) {
+      return false;
     }
 
-    // Check if there are any next sections with videos
     for (let i = activeSection + 1; i < data.courseDetails.courseContent.length; i++) {
-      if (data.courseDetails.courseContent[i].subSection?.length > 0) {
+      if (data.courseDetails.courseContent[i]?.subSection?.length > 0) {
         return false;
       }
     }
-    return true; // No next video found
+    return true;
   }, [activeSection, activeSubSection, data]);
 
-  // --- Render Logic (Loading, Error, Main Content) ---
+  // --- Render Logic ---
 
   if (loading) {
     return (
@@ -348,7 +419,7 @@ function EnrolledCoursePage() {
     );
   }
 
-  if (!data || !data.courseDetails) {
+  if (!data?.courseDetails) {
     return (
       <div className="flex h-screen items-center justify-center flex-col">
         <Info className="h-16 w-16 text-muted-foreground mb-4" />
@@ -360,21 +431,20 @@ function EnrolledCoursePage() {
     );
   }
 
-  const { courseDetails, completedVideos } = data;
-
-  // Calculate course progress
-  const totalVideos = courseDetails.courseContent.reduce(
-    (acc, section) => acc + (section.subSection?.length || 0),
+  const { courseDetails } = data;
+  const totalVideos = courseDetails.courseContent?.reduce(
+    (acc, section) => acc + (section?.subSection?.length || 0),
     0
-  );
-  const progress = totalVideos > 0 ? (completedVideos.length / totalVideos) * 100 : 0;
+  ) || 0;
+
+  const isCurrentVideoCompleted = completedVideos.includes(activeVideoDetails.subsectionId);
 
   return (
     <div className="container mx-auto px-2 py-4 md:px-4 lg:px-6 lg:py-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
-        {/* Main content area - Video player and details */}
+        {/* Main Content Area */}
         <div className="lg:col-span-2 order-1">
-          <Card className="mb-6 shadow-sm overflow-hidden">
+          <Card className="mb-6 overflow-hidden">
             <div className="aspect-video bg-black relative w-full">
               {activeVideoDetails.id ? (
                 <div className="relative w-full h-full">
@@ -384,8 +454,7 @@ function EnrolledCoursePage() {
                     onStateChange={onPlayerStateChange}
                   />
 
-                  {/* Custom video controls overlay */}
-                  {/* The opacity-0 and hover:opacity-100 will make them appear on hover */}
+                  {/* Custom Controls Overlay */}
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 flex justify-between items-center text-white opacity-0 transition-opacity duration-300 hover:opacity-100">
                     <div className="flex items-center gap-2">
                       <Button
@@ -393,42 +462,29 @@ function EnrolledCoursePage() {
                         size="icon"
                         className="h-8 w-8 text-white hover:bg-white/20"
                         onClick={togglePlayPause}
-                        aria-label={playerState.playing ? "Pause video" : "Play video"}
                       >
-                        {playerState.playing ? (
-                          <Pause className="h-4 w-4" />
-                        ) : (
-                          <Play className="h-4 w-4" />
-                        )}
+                        {playerState.playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 text-white hover:bg-white/20"
                         onClick={restartVideo}
-                        aria-label="Restart video"
                       >
                         <RotateCcw className="h-4 w-4" />
                       </Button>
                       <div className="text-xs ml-2">
                         {Math.floor(playerState.currentTime / 60)}:
-                        {Math.floor(playerState.currentTime % 60)
-                          .toString()
-                          .padStart(2, "0")}{" "}
-                        /{" "}
+                        {Math.floor(playerState.currentTime % 60).toString().padStart(2, "0")} /{" "}
                         {Math.floor(playerState.duration / 60)}:
-                        {Math.floor(playerState.duration % 60)
-                          .toString()
-                          .padStart(2, "0")}
+                        {Math.floor(playerState.duration % 60).toString().padStart(2, "0")}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      {/* You'll need to implement volume control logic for YouTube API if you want it to work */}
                       <Button
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 text-white hover:bg-white/20"
-                        aria-label="Volume control"
                       >
                         <Volume2 className="h-4 w-4" />
                       </Button>
@@ -437,7 +493,6 @@ function EnrolledCoursePage() {
                         size="icon"
                         className="h-8 w-8 text-white hover:bg-white/20"
                         onClick={toggleFullscreen}
-                        aria-label="Toggle fullscreen"
                       >
                         <Maximize className="h-4 w-4" />
                       </Button>
@@ -445,40 +500,65 @@ function EnrolledCoursePage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex h-full items-center justify-center bg-muted">
+                <div className="flex h-full items-center justify-center">
                   <div className="text-center p-6">
                     <Play className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">
-                      Select a lesson to start learning
-                    </p>
+                    <p className="text-muted-foreground">Select a lesson to start learning</p>
                   </div>
                 </div>
               )}
             </div>
-            <CardContent className="p-4 lg:p-6">
-              <h2 className="text-xl md:text-2xl font-bold mb-1">
-                {activeVideoDetails.title || courseDetails.courseName}
-              </h2>
-              <p className="text-sm text-muted-foreground mb-4">
-                {activeVideoDetails.description ||
-                  "Select a lesson to view its description"}
-              </p>
 
-              <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mb-6">
+            <CardContent className="p-4 lg:p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h2 className="text-xl md:text-2xl font-bold mb-2">
+                    {activeVideoDetails.title || courseDetails.courseName || "Course"}
+                  </h2>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {activeVideoDetails.description || "Select a lesson to view its description"}
+                  </p>
+                </div>
+
+                {/* Mark as Complete Button */}
+                {activeVideoDetails.subsectionId && (
+                  <Button
+                    onClick={() => updateCourseProgress(activeVideoDetails.subsectionId)}
+                    disabled={isCurrentVideoCompleted || isMarkingComplete}
+                    className={`ml-4 ${isCurrentVideoCompleted ? 'bg-green-600 hover:bg-green-700' : ''}`}
+                  >
+                    {isMarkingComplete ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Marking...
+                      </>
+                    ) : isCurrentVideoCompleted ? (
+                      <>
+                        <CheckCheck className="h-4 w-4 mr-2" />
+                        Completed
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                        Mark as Complete
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-6">
                 <div className="flex items-center">
                   <UserSquare className="h-4 w-4 mr-1" />
-                  {courseDetails.instructor.firstName}{" "}
-                  {courseDetails.instructor.lastName}
+                  {courseDetails.instructor?.firstName || "Unknown"} {courseDetails.instructor?.lastName || "Instructor"}
                 </div>
                 <div className="flex items-center">
                   <BookOpen className="h-4 w-4 mr-1" />
-                  {courseDetails.category.name}
+                  {courseDetails.category?.name || "Category N/A"}
                 </div>
                 <div className="flex items-center">
                   <Clock className="h-4 w-4 mr-1" />
-                  {data.totalDuration && data.totalDuration !== "NaNs"
-                    ? data.totalDuration
-                    : "Self-paced"}
+                  {data.totalDuration && data.totalDuration !== "NaNs" ? data.totalDuration : "Self-paced"}
                 </div>
               </div>
 
@@ -486,19 +566,19 @@ function EnrolledCoursePage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex items-center gap-1"
                   onClick={navigateToPrevious}
                   disabled={isPreviousDisabled()}
                 >
-                  <ChevronLeft className="h-4 w-4" /> Previous Lesson
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  Previous Lesson
                 </Button>
                 <Button
                   size="sm"
-                  className="flex items-center gap-1"
                   onClick={navigateToNext}
                   disabled={isNextDisabled()}
                 >
-                  Next Lesson <ChevronRight className="h-4 w-4" />
+                  Next Lesson
+                  <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
 
@@ -512,20 +592,16 @@ function EnrolledCoursePage() {
                 <TabsContent value="content" className="mt-2">
                   <div className="space-y-6">
                     <div>
-                      <h3 className="text-lg font-medium mb-3">
-                        Course Description
-                      </h3>
+                      <h3 className="text-lg font-medium mb-3">Course Description</h3>
                       <div className="text-sm text-muted-foreground leading-relaxed">
                         {formatDescription(courseDetails.courseDescription)}
                       </div>
                     </div>
 
-                    <Separator className="my-6" />
+                    <Separator />
 
                     <div>
-                      <h3 className="text-lg font-medium mb-3">
-                        What You'll Learn
-                      </h3>
+                      <h3 className="text-lg font-medium mb-3">What You'll Learn</h3>
                       <div className="text-sm text-muted-foreground leading-relaxed">
                         {formatDescription(courseDetails.whatYouWillLearn)}
                       </div>
@@ -534,27 +610,25 @@ function EnrolledCoursePage() {
                 </TabsContent>
 
                 <TabsContent value="instructions" className="mt-2">
-                  <h3 className="text-lg font-medium mb-3">
-                    Course Instructions
-                  </h3>
+                  <h3 className="text-lg font-medium mb-3">Course Instructions</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {courseDetails.instructions.map((instruction, index) => (
+                    {courseDetails.instructions?.map((instruction, index) => (
                       <div key={index} className="flex items-start gap-2">
                         <CheckCircle className="h-4 w-4 mt-1 text-green-500 flex-shrink-0" />
                         <span className="text-sm">{instruction}</span>
                       </div>
-                    ))}
+                    )) || <p className="text-sm text-muted-foreground">No instructions available</p>}
                   </div>
                 </TabsContent>
 
                 <TabsContent value="tags" className="mt-2">
                   <h3 className="text-lg font-medium mb-3">Course Tags</h3>
                   <div className="flex flex-wrap gap-2">
-                    {courseDetails.tag.map((tag, index) => (
+                    {courseDetails.tag?.map((tag, index) => (
                       <Badge key={index} variant="secondary" className="text-xs py-1">
                         {tag}
                       </Badge>
-                    ))}
+                    )) || <p className="text-sm text-muted-foreground">No tags available</p>}
                   </div>
                 </TabsContent>
               </Tabs>
@@ -562,9 +636,9 @@ function EnrolledCoursePage() {
           </Card>
         </div>
 
-        {/* Right sidebar - Course content */}
+        {/* Course Content Sidebar */}
         <div className="lg:col-span-1 order-2">
-          <Card className="h-full shadow-sm">
+          <Card className="h-full">
             <div className="p-4 border-b flex items-center justify-between">
               <h3 className="font-semibold text-lg">Course Content</h3>
               <div className="text-sm text-muted-foreground flex items-center">
@@ -572,42 +646,39 @@ function EnrolledCoursePage() {
                 {totalVideos} {totalVideos === 1 ? "lesson" : "lessons"}
               </div>
             </div>
+
             <CardContent className="p-0">
               <div className="p-4">
                 <div className="mb-4">
-                  <div className="flex justify-between text-sm mb-1">
+                  <div className="flex justify-between text-sm mb-2">
                     <span>Your progress</span>
-                    <span>
+                    <span className="font-medium">
                       {completedVideos.length} / {totalVideos} completed
                     </span>
                   </div>
-                  <Progress value={progress} className="h-2" />
+                  <Progress value={progressPercentage} className="h-2" />
+                  <div className="text-xs text-muted-foreground mt-1 text-right">
+                    {progressPercentage.toFixed(1)}%
+                  </div>
                 </div>
 
                 <ScrollArea className="h-[calc(100vh-220px)] pr-4">
-                  {courseDetails.courseContent.map((section, sectionIndex) => {
-                    const hasSubSections =
-                      section.subSection && section.subSection.length > 0;
+                  {courseDetails.courseContent?.map((section, sectionIndex) => {
+                    const hasSubSections = section?.subSection && section.subSection.length > 0;
                     return (
-                      <div key={section._id} className="mb-4">
+                      <div key={section._id || sectionIndex} className="mb-4">
                         <Button
                           variant="ghost"
-                          className="w-full justify-between items-center p-3 h-auto text-left font-medium hover:bg-secondary"
+                          className="w-full justify-between items-center p-3 h-auto text-left font-medium hover:bg-muted/50"
                           onClick={() => toggleSection(sectionIndex)}
                         >
-                          <div className="flex items-center">
-                            <span>
-                              {sectionIndex + 1}. {section.sectionName}
-                            </span>
-                          </div>
+                          <span className="text-sm font-medium">
+                            {sectionIndex + 1}. {section.sectionName || "Untitled Section"}
+                          </span>
                           <div className="flex items-center text-xs text-muted-foreground">
-                            {hasSubSections
-                              ? `${section.subSection.length} lessons`
-                              : "No lessons"}
+                            {hasSubSections ? `${section.subSection.length} lessons` : "No lessons"}
                             <ChevronRight
-                              className={`h-4 w-4 ml-1 transition-transform ${expandedSections[sectionIndex]
-                                ? "rotate-90"
-                                : ""
+                              className={`h-4 w-4 ml-1 transition-transform ${expandedSections[sectionIndex] ? "rotate-90" : ""
                                 }`}
                             />
                           </div>
@@ -616,37 +687,28 @@ function EnrolledCoursePage() {
                         {expandedSections[sectionIndex] && hasSubSections && (
                           <div className="pl-4 mt-1 space-y-1">
                             {section.subSection.map((subSection, subIndex) => {
-                              const isActive =
-                                sectionIndex === activeSection &&
-                                subIndex === activeSubSection;
-                              const isCompleted = completedVideos.includes(
-                                subSection._id
-                              );
+                              const isActive = sectionIndex === activeSection && subIndex === activeSubSection;
+                              const isCompleted = completedVideos.includes(subSection._id);
 
                               return (
                                 <Button
-                                  key={subSection._id}
+                                  key={subSection._id || subIndex}
                                   variant="ghost"
-                                  className={`w-full justify-start py-2 px-3 h-auto text-left ${isActive ? "bg-secondary" : ""
+                                  className={`w-full justify-start py-2 px-3 h-auto text-left ${isActive ? "bg-muted" : ""
                                     }`}
-                                  onClick={() =>
-                                    handleVideoSelection(sectionIndex, subIndex)
-                                  }
+                                  onClick={() => handleVideoSelection(sectionIndex, subIndex)}
                                 >
-                                  <div className="flex items-start">
+                                  <div className="flex items-start w-full">
                                     {isCompleted ? (
                                       <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5 flex-shrink-0" />
                                     ) : (
                                       <Circle className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
                                     )}
-                                    <div className="flex flex-col">
-                                      <span className="text-sm font-medium">
-                                        {subSection.title}
-                                      </span>
+                                    <div className="flex flex-col text-left">
+                                      <span className="text-sm font-medium">{subSection.title || "Untitled Lesson"}</span>
                                       <span className="text-xs text-muted-foreground mt-0.5 flex items-center">
                                         <Play className="h-3 w-3 mr-1" />
-                                        {subSection.timeDuration &&
-                                          subSection.timeDuration !== "N/A"
+                                        {subSection.timeDuration && subSection.timeDuration !== "N/A"
                                           ? subSection.timeDuration
                                           : "Video"}
                                       </span>
@@ -668,7 +730,12 @@ function EnrolledCoursePage() {
                         )}
                       </div>
                     );
-                  })}
+                  }) || (
+                      <div className="flex items-center justify-center p-8 text-muted-foreground">
+                        <Info className="h-4 w-4 mr-2" />
+                        <span>No course content available</span>
+                      </div>
+                    )}
                 </ScrollArea>
               </div>
             </CardContent>

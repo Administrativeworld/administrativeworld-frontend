@@ -41,7 +41,9 @@ const YouTubePlayer = ({ videoId, onReady, onStateChange }) => {
             onStateChange: (event) => {
               if (onStateChange) onStateChange(event);
             },
-            // onError: (event) => { console.error("YouTube Player Error:", event.data); }
+            onError: (event) => {
+              console.error("YouTube Player Error:", event.data);
+            }
           },
         });
       }
@@ -56,11 +58,30 @@ const YouTubePlayer = ({ videoId, onReady, onStateChange }) => {
     // Cleanup function to destroy the player when component unmounts or videoId changes
     return () => {
       if (playerInstanceRef.current) {
-        // Stop video and then destroy player to prevent memory leaks
-        playerInstanceRef.current.stopVideo();
-        playerInstanceRef.current.destroy();
-        playerInstanceRef.current = null;
+        try {
+          // Pause the video first (stopVideo doesn't exist, use pauseVideo instead)
+          if (typeof playerInstanceRef.current.pauseVideo === 'function') {
+            playerInstanceRef.current.pauseVideo();
+          }
+
+          // Clear any intervals that might be running
+          if (playerInstanceRef.current.updateInterval) {
+            clearInterval(playerInstanceRef.current.updateInterval);
+          }
+
+          // Destroy the player instance to prevent memory leaks
+          if (typeof playerInstanceRef.current.destroy === 'function') {
+            playerInstanceRef.current.destroy();
+          }
+
+          playerInstanceRef.current = null;
+        } catch (error) {
+          console.error("Error cleaning up YouTube player:", error);
+          // Even if there's an error, set the ref to null
+          playerInstanceRef.current = null;
+        }
       }
+
       // If the component unmounts, remove the global onYouTubeIframeAPIReady to avoid conflicts
       // This is important if you have multiple instances or complex routing
       if (window.onYouTubeIframeAPIReady) {
