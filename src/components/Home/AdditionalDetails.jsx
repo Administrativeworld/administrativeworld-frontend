@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import PropTypes from "prop-types";
+
 import {
   Card,
   CardContent,
@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import {
   Tabs,
   TabsContent,
@@ -25,178 +24,210 @@ import {
   Bookmark
 } from 'lucide-react';
 
-
-
-const achievements = [
-  { number: "1000+", label: "Students Enrolled" },
-  { number: "50+", label: "Selections" },
-  { number: "2+", label: "Expert Mentors" },
-  { number: "95%", label: "Success Rate" }
-];
-
-const AdditionalDetails = () => {
-  
-  const navigate = useNavigate();
-
-  const handleEnroll = () => {
-    navigate("/home/explore");
-  };
-  const handleLearnMore = () => {
-    navigate('/home/about'); 
-  };
-
+const AdditionalDetails = ({ metaData }) => {
   return (
-    <div className="space-y-8 py-4 sm:py-8">
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+        {/* Header Section */}
+        <div className="mb-4 sm:mb-8">
+          <div className="flex w-full flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+            <div className="space-y-1">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight flex items-center gap-2 sm:gap-3">
+                <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg">
+                  <GraduationCap className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+                </div>
+                <span className="leading-tight">Course Details</span>
+              </h1>
+              <p className="text-sm sm:text-base lg:text-lg text-muted-foreground">
+                Comprehensive preparation for UPSC and other competitive exams
+              </p>
+            </div>
+          </div>
 
-      {/* Achievements Section */}
-      <section className="w-full px-2 sm:px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
-            {achievements.map((achievement, index) => (
-              <Card key={index} className="text-center">
-                <CardContent className="pt-4 sm:pt-6">
-                  <p className="text-xl sm:text-3xl font-bold text-primary mb-1 sm:mb-2">{achievement.number}</p>
-                  <p className="text-xs sm:text-sm text-gray-600">{achievement.label}</p>
-                </CardContent>
-              </Card>
-            ))}
+          {/* Stats Bar */}
+          <div className="flex  grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
+            <Card className="p-2.5 sm:p-4 w-1/2">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg flex-shrink-0">
+                  <Book className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs sm:text-sm text-muted-foreground truncate">Courses</p>
+                  <p className="text-lg sm:text-xl font-bold">
+                    {metaData ? metaData.totalCourses : 'N/A'}+
+                  </p>
+                </div>
+              </div>
+            </Card>
+
+
+
+
+
+            <Card className="p-2.5 sm:p-4 w-1/2">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="p-1.5 sm:p-2 bg-orange-100 rounded-lg flex-shrink-0">
+                  <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-orange-600" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs sm:text-sm text-muted-foreground truncate">Resources</p>
+                  <p className="text-lg sm:text-xl font-bold">
+                    {metaData ? metaData.totalStudyMaterial : 'N/A'}+
+                  </p>
+                </div>
+              </div>
+            </Card>
           </div>
         </div>
-      </section>
 
-      {/* Features Tabs Section */}
-      <section className="w-full px-2 sm:px-4">
-        <div className="max-w-6xl mx-auto">
-          <Tabs defaultValue="courses" className="w-full">
-            <div className="overflow-hidden">
-              <TabsList className="w-full flex">
-                <TabsTrigger value="courses" className="flex-1">Courses</TabsTrigger>
-                <TabsTrigger value="features" className="flex-1">Features</TabsTrigger>
-                <TabsTrigger value="schedule" className="flex-1">Schedule</TabsTrigger>
-                <TabsTrigger value="resources" className="flex-1">Resources</TabsTrigger>
-              </TabsList>
+        {/* Features Tabs Section */}
+        <Card className="mb-4 sm:mb-6">
+          <CardContent className="p-3 sm:p-6">
+            <div className="max-w-6xl mx-auto">
+              <Tabs defaultValue="courses" className="w-full ">
+                <div className="overflow-hidden mb-4 sm:mb-6">
+                  <TabsList className="w-full flex grid-cols-4 h-auto p-1">
+                    <TabsTrigger
+                      value="courses"
+                      className="flex-1 text-xs sm:text-sm py-2 sm:py-2.5 px-1 sm:px-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                    >
+                      <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+                        <Book className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                        <span className="truncate">Courses</span>
+                      </div>
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="resources"
+                      className="flex-1 text-xs sm:text-sm py-2 sm:py-2.5 px-1 sm:px-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                    >
+                      <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+                        <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                        <span className="truncate">Resources</span>
+                      </div>
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
+
+                <TabsContent value="courses" className="mt-0">
+                  <Card className="border-2 border-border">
+                    <CardHeader className="pb-3 sm:pb-4">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg flex-shrink-0">
+                          <Book className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-lg sm:text-xl">Our Courses</CardTitle>
+                          <CardDescription className="text-xs sm:text-sm">
+                            Comprehensive preparation for UPSC and other competitive exams
+                          </CardDescription>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                        <Card className="p-3 sm:p-4 bg-muted/50">
+                          <div className="flex items-start space-x-3">
+                            <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg flex-shrink-0">
+                              <Book className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                            </div>
+                            <div className="min-w-0">
+                              <h4 className="text-sm sm:text-base font-semibold mb-1">Foundation Course</h4>
+                              <p className="text-xs sm:text-sm text-muted-foreground">
+                                Complete syllabus coverage with basic to advanced concepts
+                              </p>
+                            </div>
+                          </div>
+                        </Card>
+                        <Card className="p-3 sm:p-4 bg-muted/50">
+                          <div className="flex items-start space-x-3">
+                            <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg flex-shrink-0">
+                              <Target className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                            </div>
+                            <div className="min-w-0">
+                              <h4 className="text-sm sm:text-base font-semibold mb-1">Test Series</h4>
+                              <p className="text-xs sm:text-sm text-muted-foreground">
+                                Regular mock tests with detailed analysis
+                              </p>
+                            </div>
+                          </div>
+                        </Card>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+
+
+
+                <TabsContent value="resources" className="mt-0">
+                  <Card className="border-2 border-border">
+                    <CardHeader className="pb-3 sm:pb-4">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="p-1.5 sm:p-2 bg-orange-100 rounded-lg flex-shrink-0">
+                          <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-orange-600" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-lg sm:text-xl">Study Resources</CardTitle>
+                          <CardDescription className="text-xs sm:text-sm">
+                            Comprehensive study materials for thorough preparation
+                          </CardDescription>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                        <Card className="p-3 sm:p-4 bg-muted/50">
+                          <div className="flex items-start space-x-3">
+                            <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg flex-shrink-0">
+                              <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                            </div>
+                            <div className="min-w-0">
+                              <h4 className="text-sm sm:text-base font-semibold mb-1">Study Materials</h4>
+                              <p className="text-xs sm:text-sm text-muted-foreground">
+                                Well-structured notes and practice questions
+                              </p>
+                            </div>
+                          </div>
+                        </Card>
+                        <Card className="p-3 sm:p-4 bg-muted/50">
+                          <div className="flex items-start space-x-3">
+                            <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg flex-shrink-0">
+                              <Users className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                            </div>
+                            <div className="min-w-0">
+                              <h4 className="text-sm sm:text-base font-semibold mb-1">Discussion Forums</h4>
+                              <p className="text-xs sm:text-sm text-muted-foreground">
+                                Interactive platform for doubt clearing
+                              </p>
+                            </div>
+                          </div>
+                        </Card>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
             </div>
-
-            <TabsContent value="courses">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg sm:text-xl">Our Courses</CardTitle>
-                  <CardDescription className="text-sm">Comprehensive preparation for UPSC and other competitive exams</CardDescription>
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-start space-x-3">
-                    <Book className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-semibold">Foundation Course</h4>
-                      <p className="text-sm text-gray-600">Complete syllabus coverage with basic to advanced concepts</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <Target className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-semibold">Test Series</h4>
-                      <p className="text-sm text-gray-600">Regular mock tests with detailed analysis</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="features">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg sm:text-xl">Key Features</CardTitle>
-                  <CardDescription className="text-sm">What makes us unique</CardDescription>
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-start space-x-3">
-                    <GraduationCap className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-semibold">Expert Faculty</h4>
-                      <p className="text-sm text-gray-600">Learn from experienced mentors and successful candidates</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <Trophy className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-semibold">Proven Track Record</h4>
-                      <p className="text-sm text-gray-600">Consistent results in UPSC examinations</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="schedule">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg sm:text-xl">Class Schedule</CardTitle>
-                  <CardDescription className="text-sm">Flexible timing for better learning</CardDescription>
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-start space-x-3">
-                    <Calendar className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-semibold">Regular Batches</h4>
-                      <p className="text-sm text-gray-600">Morning and evening batches available</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <Bookmark className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-semibold">Weekend Batches</h4>
-                      <p className="text-sm text-gray-600">Special weekend programs for working professionals</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="resources">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg sm:text-xl">Study Resources</CardTitle>
-                  <CardDescription className="text-sm">Comprehensive study materials for thorough preparation</CardDescription>
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-start space-x-3">
-                    <CheckCircle2 className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-semibold">Study Materials</h4>
-                      <p className="text-sm text-gray-600">Well-structured notes and practice questions</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <Users className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-semibold">Discussion Forums</h4>
-                      <p className="text-sm text-gray-600">Interactive platform for doubt clearing</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="w-full px-2 sm:px-4">
-        <div className="max-w-6xl mx-auto">
-          <Card className="text-center">
-            <CardHeader>
-              <CardTitle className="text-lg sm:text-xl">Start Your UPSC Journey Today</CardTitle>
-              <CardDescription className="text-sm">Join Administrative World and take the first step towards your dream career</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3 sm:space-y-0 sm:space-x-4">
-              <Button size="lg" className="w-full sm:w-auto" onClick={handleEnroll}>Enroll Now</Button>
-              <Button variant="outline" size="lg" className="w-full sm:w-auto" onClick={handleLearnMore}>Learn More</Button>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
+
+AdditionalDetails.propTypes = {
+  metaData: PropTypes.shape({
+    totalRegisteredStudent: PropTypes.number,
+    totalCourses: PropTypes.number,
+    totalStudyMaterial: PropTypes.number,
+    totalEnrolledMaterials: PropTypes.number,
+    totalStoreItems: PropTypes.number,
+    breakdown: PropTypes.shape({
+      coursePurchases: PropTypes.number,
+      storePurchases: PropTypes.number,
+    }),
+  }).isRequired,
+};
+
 
 export default AdditionalDetails;

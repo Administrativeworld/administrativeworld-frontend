@@ -13,7 +13,8 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import toast from "react-hot-toast";
-// Icons
+
+
 import {
   ChevronLeft,
   ChevronRight,
@@ -33,10 +34,13 @@ import {
 
 // Custom Player Component
 import YouTubePlayer from "../Player/YouTubePlayer";
+import CourseRatingReviews from "./CourseRatingReviews";
 
 function EnrolledCoursePage() {
   const dispatch = useDispatch();
   const { data, loading } = useSelector((state) => state.fetchLearningCourse);
+  const { status, loggedIn, user } = useSelector((state) => state.authUser);
+
   const [searchParams] = useSearchParams();
   const courseId = searchParams.get("id");
 
@@ -520,12 +524,32 @@ function EnrolledCoursePage() {
                   </p>
                 </div>
 
-                {/* Mark as Complete Button */}
+
+
+              </div>
+
+              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center">
+                  <UserSquare className="h-4 w-4 mr-1" />
+                  {courseDetails.instructor?.firstName || "Unknown"} {courseDetails.instructor?.lastName || "Instructor"}
+                </div>
+                <div className="flex items-center">
+                  <BookOpen className="h-4 w-4 mr-1" />
+                  {courseDetails.category?.name || "Category N/A"}
+                </div>
+                <div className="flex items-center">
+                  <Clock className="h-4 w-4 mr-1" />
+                  {data.totalDuration && data.totalDuration !== "NaNs" ? data.totalDuration : "Self-paced"}
+                </div>
+
+              </div>
+              {/* Mark as Complete Button */}
+              <div className=" my-3 flex">
                 {activeVideoDetails.subsectionId && (
                   <Button
                     onClick={() => updateCourseProgress(activeVideoDetails.subsectionId)}
                     disabled={isCurrentVideoCompleted || isMarkingComplete}
-                    className={`ml-4 ${isCurrentVideoCompleted ? 'bg-green-600 hover:bg-green-700' : ''}`}
+                    className={` ml-auto ${isCurrentVideoCompleted ? 'bg-green-600 hover:bg-green-700' : ''}`}
                   >
                     {isMarkingComplete ? (
                       <>
@@ -546,22 +570,6 @@ function EnrolledCoursePage() {
                   </Button>
                 )}
               </div>
-
-              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-6">
-                <div className="flex items-center">
-                  <UserSquare className="h-4 w-4 mr-1" />
-                  {courseDetails.instructor?.firstName || "Unknown"} {courseDetails.instructor?.lastName || "Instructor"}
-                </div>
-                <div className="flex items-center">
-                  <BookOpen className="h-4 w-4 mr-1" />
-                  {courseDetails.category?.name || "Category N/A"}
-                </div>
-                <div className="flex items-center">
-                  <Clock className="h-4 w-4 mr-1" />
-                  {data.totalDuration && data.totalDuration !== "NaNs" ? data.totalDuration : "Self-paced"}
-                </div>
-              </div>
-
               <div className="flex justify-between mb-8">
                 <Button
                   variant="outline"
@@ -742,6 +750,7 @@ function EnrolledCoursePage() {
           </Card>
         </div>
       </div>
+      <CourseRatingReviews courseId={courseId} isLoggedIn={loggedIn} user={user} />
     </div>
   );
 }

@@ -18,14 +18,13 @@ export default function EditProfileDialog({ user, open, setOpen }) {
   const dispatch = useDispatch();
   const { loading: profileLoading, status } = useSelector((state) => state.updateProfile);
   const { loading: imageUploading, imageUrl } = useSelector((state) => state.displayPicture);
-
   const [imagePreview, setImagePreview] = useState(user?.image || "");
   const [formData, setFormData] = useState({
     firstName: user?.firstName || "",
     lastName: user?.lastName || "",
     email: user?.email || "",
     dateOfBirth: user?.additionalDetails?.dateOfBirth || "",
-    contactNumber: user?.additionalDetails?.contactNumber || "",
+    contactNumber: user?.contactNumber || "",
     about: user?.additionalDetails?.about || "",
     gender: user?.additionalDetails?.gender || "",
   });
@@ -34,7 +33,7 @@ export default function EditProfileDialog({ user, open, setOpen }) {
     const file = e.target.files[0];
     if (file) {
       setImagePreview(URL.createObjectURL(file));
-      dispatch(uploadProfilePicture(file));
+      dispatch(uploadProfilePicture({ file: file, publicId: user.image_public_id }));
     }
   };
 

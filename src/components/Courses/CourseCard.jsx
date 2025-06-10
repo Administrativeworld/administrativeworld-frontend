@@ -5,20 +5,24 @@ import { Avatar } from "../ui/avatar";
 import { Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 function CourseCard({ course, ButtonName, path }) {
-  const rating = 4.5; // Dummy rating value
   const navigate = useNavigate();
   const { loggedIn, user } = useSelector((state) => state.authUser);
-
   // Defensive check: return nothing if course is missing
   if (!course || typeof course !== "object") return null;
+
+  // Get rating from course.avgRating or show N/A
+  const rating = course.avgRating && typeof course.avgRating === 'number' && !isNaN(course.avgRating)
+    ? course.avgRating
+    : null;
+
   const isEnrolled = (courseId) => {
     return loggedIn && user && user.courses?.length
       ? user.courses.some((course) => course._id.toString() === courseId.toString())
       : false;
   };
-
   return (
     <div className="flex justify-center">
       <Card className="group w-[250px] md:w-[270px] lg:w-[290px] rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
@@ -67,14 +71,16 @@ function CourseCard({ course, ButtonName, path }) {
                 <Star
                   key={i}
                   size={14}
-                  className={`${i + 0.5 <= rating
+                  className={`${rating && i + 0.5 <= rating
                     ? "text-yellow-400 fill-current"
                     : "text-gray-300 stroke-current"
                     }`}
                 />
               ))}
             </div>
-            <span className="text-xs">{rating}</span>
+            <span className="text-xs">
+              {rating ? rating.toFixed(1) : 'N/A'}
+            </span>
           </div>
 
           <div className="flex flex-wrap gap-1 mb-2">
@@ -128,7 +134,7 @@ CourseCard.propTypes = {
     thumbnail: PropTypes.string.isRequired,
     price: PropTypes.number.isRequired,
     courseDescription: PropTypes.string.isRequired,
-
+    avgRating: PropTypes.number,
     tag: PropTypes.arrayOf(PropTypes.string).isRequired,
     instructor: PropTypes.shape({
       firstName: PropTypes.string,
