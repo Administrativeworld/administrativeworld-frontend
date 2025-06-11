@@ -6,10 +6,12 @@ import { getACourse } from "@/redux/api/getACourseSlice";
 import CoursePageHeader from "./CoursePageComponents/CoursePageHeader";
 import CourseDetails from "./CoursePageComponents/CourseDetails";
 import CourseContent from "./CoursePageComponents/CourseContent";
+import CourseRatingReviews from "../User/CourseRatingReviews";
 
 function CoursePage() {
   const dispatch = useDispatch();
   const { course } = useSelector((state) => state.getACourse);
+  const { status, loggedIn, user } = useSelector((state) => state.authUser);
   const [searchParams] = useSearchParams();
   const courseId = searchParams.get("id");
 
@@ -30,6 +32,7 @@ function CoursePage() {
             courseDes={course.courseDescription || ""}
             thumbnail={course.thumbnail || ""}
             category={course.category?.name || "Uncategorized"}
+            avgRating={course?.avgRating || 0}
           />
           <CourseDetails
             whatYouWillLearn={course.whatYouWillLearn || []}
@@ -44,6 +47,7 @@ function CoursePage() {
               courseContent={course.courseContent}
             />
           )}
+          <CourseRatingReviews courseId={course._id} isLoggedIn={loggedIn} user={user} />
         </>
       ) : (
         <p>Loading course data...</p>

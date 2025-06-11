@@ -121,12 +121,12 @@ export default function Store() {
   };
 
   const handlePreview = (book) => {
-    console.log('Preview book:', book);
+    // console.log('Preview book:', book);
     // Implement preview logic
   };
 
   const handlePurchase = (book) => {
-    console.log('Purchase book:', book);
+    // console.log('Purchase book:', book);
     // Implement purchase logic
   };
 
