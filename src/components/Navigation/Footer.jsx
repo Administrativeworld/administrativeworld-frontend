@@ -58,7 +58,7 @@ const Footer = () => {
                   Explore a wide range of books and resources dedicated to Public Administration. Whether you're a student, aspirant, or professional, our curated collection is designed to deepen your understanding of how public institutions work and evolve..
                 </p>
               </CardContent>
-            </Card>
+            </Card> 
 
             {/* Company Links */}
             <Card className="bg-background/50 backdrop-blur-sm border-none">
@@ -141,7 +141,7 @@ const Footer = () => {
                 <CardTitle className="text-lg flex items-center gap-2">
                   <ShieldCheck className="h-5 w-5 text-primary" />
                   Support
-                </CardTitle>
+                </CardTitle> 
               </CardHeader>
               <CardContent>
                 <nav className="space-y-1">
@@ -175,11 +175,10 @@ const Footer = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <Button variant="secondary" className="justify-start gap-2">
-                    <Phone className="h-4 w-4" />
-                    +91 98968-59767
+                <Button variant="secondary" className="justify-start gap-2" onClick={() => window.open("https://wa.me/919896859767", "_blank")}>
+                    <Phone className="h-4 w-4" />+91 98968-59767
                   </Button>
-                  <Button variant="secondary" className="justify-start gap-2">
+                  <Button variant="secondary" className="justify-start gap-2" onClick={() => window.open("mailto:contactadworld@gmail.com", "_blank")}>
                     <Mail className="h-4 w-4" />
                     contactadworld@gmail.com
                   </Button>
