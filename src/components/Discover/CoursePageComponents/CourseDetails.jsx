@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { useState } from "react";
 import { Bookmark, IndianRupee, Eye, ShoppingCart } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,35 +16,51 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-// Note: Import these in your actual implementation:
 import { buyCourse } from "@/configs/capturePaymentSlice";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 function CourseDetails({ whatYouWillLearn, thumbnail, price, tags = [], courseId }) {
-  // Note: Replace these with actual Redux hooks in your implementation
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user, loggedIn } = useSelector((state) => state.authUser);
 
-
+  const [couponCode, setCouponCode] = useState("");
+  const [discountedPrice, setDiscountedPrice] = useState(price);
 
   const handleEnrollClick = () => {
     if (loggedIn) {
-      buyCourse(courseId, user, navigate);
+      buyCourse(courseId, user, navigate,couponCode);
     } else {
       navigate('/login');
     }
     console.log('Enroll clicked for course:', courseId);
   };
 
+  const handleValidateCoupon = async () => {
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/coupon/validate`, {
+        couponCode: couponCode,
+        courseId,
+        userId: user._id,
+      });
+      console.log(res.data)
+      const { finalPrice, discount } = res.data;
+      setDiscountedPrice(finalPrice);
+      toast.success(`Coupon applied! You saved ₹${discount}`);
+    } catch (err) {
+      setDiscountedPrice(price);
+      toast.error(err?.response?.data?.message || "Invalid or expired coupon");
+    }
+  };
+
   return (
     <section className="container mx-auto px-4 py-8">
       <Card className="shadow-lg border-0 bg-gradient-to-br from-background to-muted/20">
         <CardHeader className="pb-4">
-          <CardTitle className="text-2xl font-bold text-center">
-            Course Overview
-          </CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">Course Overview</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -62,17 +79,34 @@ function CourseDetails({ whatYouWillLearn, thumbnail, price, tags = [], courseId
 
               {/* Price Card */}
               <Card className="bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
-                <CardContent className="p-4">
+                <CardContent className="p-4 space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <IndianRupee className="w-6 h-6 text-primary" />
-                      <span className="text-3xl font-bold text-primary">
-                        {price}
+                      <span className={`text-3xl font-bold ${discountedPrice < price ? "line-through text-muted-foreground" : "text-primary"}`}>
+                        ₹{price}
                       </span>
+                      {discountedPrice < price && (
+                        <span className="text-3xl font-bold text-green-600 ml-2">
+                          ₹{discountedPrice}
+                        </span>
+                      )}
                     </div>
                     <Badge variant="secondary" className="text-sm">
                       Best Value
                     </Badge>
+                  </div>
+
+                  {/* Coupon Input */}
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Enter coupon code"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
+                      className="flex-1 px-3 py-2 border rounded-md text-sm text-black"
+                    />
+                    <Button size="sm" onClick={handleValidateCoupon}>Apply</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -172,10 +206,6 @@ function CourseDetails({ whatYouWillLearn, thumbnail, price, tags = [], courseId
               {/* Additional Info */}
               <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
                 <span>✓ Lifetime Access</span>
-                {/* <Separator orientation="vertical" className="h-4" />
-                <span>✓ Certificate Included</span>
-                <Separator orientation="vertical" className="h-4" />
-                <span>✓ 30-Day Refund</span> */}
               </div>
             </div>
           </div>

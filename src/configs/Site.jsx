@@ -33,8 +33,8 @@ export const adminNavLinks = [
     icon: <BookCheck />,
   },
   {
-    title: "Pages",
-    path: "",
+    title: "Coupon",
+    path: "/admin/coupon",
     icon: <FileText />,
   },
   {
