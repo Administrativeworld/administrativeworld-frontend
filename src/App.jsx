@@ -35,6 +35,7 @@ import PublishedBooks from "./components/Admin/Books/Published/PublishedBooks.js
 // Loading Component
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import CreateCombo from "./components/Admin/Books/Published/CreateCombo.jsx";
 
 const LoadingScreen = () => (
   <div className="flex items-center justify-center min-h-screen bg-background">
@@ -62,17 +63,28 @@ function App() {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      // Always validate user on app start
-      if (status === "idle") {
-        await dispatch(validateUser());
+      // Only validate if we're in idle state and document is ready
+      if (status === "idle" && document.readyState === 'complete') {
+        try {
+          await dispatch(validateUser());
+        } catch (error) {
+          console.log('Auth validation failed:', error);
+        }
       }
-      // Set initializing to false after a short delay to ensure auth state is settled
+
+      // Set initializing to false after validation attempt
       setTimeout(() => {
         setIsInitializing(false);
-      }, 100);
+      }, 150); // Slightly longer delay
     };
 
-    initializeAuth();
+    // Wait a bit if document isn't ready
+    if (document.readyState !== 'complete') {
+      window.addEventListener('load', initializeAuth);
+      return () => window.removeEventListener('load', initializeAuth);
+    } else {
+      initializeAuth();
+    }
   }, [status, dispatch]);
 
   // Show loading screen while initializing authentication
@@ -156,6 +168,7 @@ const AdminRoutes = () => {
           <Route index element={<BooksIndex />} />
           <Route path="create" element={<CreateBook />} />
           <Route path="published" element={<PublishedBooks />} />
+          <Route path="published/createcombo" element={<CreateCombo />} />
         </Route>
 
         {/* Other Admin Routes */}

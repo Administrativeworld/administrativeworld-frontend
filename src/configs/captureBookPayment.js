@@ -16,34 +16,34 @@ const loadRazorpayScript = () => {
 
 // Main payment function - call this on button click
 export const initiateBookPurchase = async ({
-  bookId,
-  bookTitle,
-  bookPrice,
+  bookId = null,
+  comboId = null,
+  title = '',
+  price = 0,
   userDetails = {},
   onSuccess = () => { },
   onError = () => { },
   onLoading = () => { }
 }) => {
   try {
+    if (!bookId && !comboId) throw new Error('Book ID or Combo ID is required');
+
     onLoading(true);
 
     // Step 1: Load Razorpay script
     const scriptLoaded = await loadRazorpayScript();
-    if (!scriptLoaded) {
-      throw new Error('Razorpay SDK failed to load');
-    }
+    if (!scriptLoaded) throw new Error('Razorpay SDK failed to load');
 
     // Step 2: Create payment order
-    const orderData = await createPaymentOrder({
-      bookId
-    });
+    const orderData = await createPaymentOrder({ bookId, comboId });
 
     // Step 3: Configure and open Razorpay
     await openRazorpayCheckout({
       orderData,
       bookId,
-      bookTitle,
-      bookPrice,
+      comboId,
+      title,
+      price,
       userDetails,
       onSuccess,
       onError,
@@ -57,14 +57,13 @@ export const initiateBookPurchase = async ({
   }
 };
 
-// Create payment order (calls your captureBookPayment controller)
-const createPaymentOrder = async ({ bookId }) => {
+// Create payment order (calls your captureBookOrComboPayment controller)
+const createPaymentOrder = async ({ bookId, comboId }) => {
   const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/store/capture`,
-    { bookId },
+    { bookId: bookId, comboId: comboId },
     {
-      withCredentials: true, headers: {
-        'Content-Type': 'application/json'
-      }
+      withCredentials: true,
+      headers: { 'Content-Type': 'application/json' }
     }
   );
 
@@ -79,46 +78,41 @@ const createPaymentOrder = async ({ bookId }) => {
 const openRazorpayCheckout = async ({
   orderData,
   bookId,
-  bookTitle,
-  bookPrice,
+  comboId,
+  title,
+  price,
   userDetails,
   onSuccess,
   onError,
   onLoading
 }) => {
-  console.log(orderData)
   const options = {
-    key: import.meta.env.VITE_RAZORPAY_KEY, // Your Razorpay key
+    key: import.meta.env.VITE_RAZORPAY_KEY,
     amount: orderData.amount,
     currency: orderData.currency,
     name: 'BookStore',
-    description: `Purchase: ${bookTitle}`,
+    description: `Purchase: ${title}`,
     order_id: orderData.id,
 
-    // Payment success handler
     handler: async function (response) {
       await verifyPayment({
         paymentResponse: response,
         bookId,
+        comboId,
         onSuccess,
         onError,
         onLoading
       });
     },
 
-    // User prefill data
     prefill: {
       name: userDetails.name || '',
       email: userDetails.email || '',
       contact: userDetails.phone || ''
     },
 
-    // Theme customization
-    theme: {
-      color: '#3B82F6'
-    },
+    theme: { color: '#3B82F6' },
 
-    // Modal settings
     modal: {
       ondismiss: function () {
         onLoading(false);
@@ -131,10 +125,11 @@ const openRazorpayCheckout = async ({
   razorpay.open();
 };
 
-// Verify payment (calls your verifyBookPayment controller)
+// Verify payment (calls your verifyBookOrComboPayment controller)
 const verifyPayment = async ({
   paymentResponse,
   bookId,
+  comboId,
   onSuccess,
   onError,
   onLoading
@@ -145,13 +140,12 @@ const verifyPayment = async ({
         razorpay_order_id: paymentResponse.razorpay_order_id,
         razorpay_payment_id: paymentResponse.razorpay_payment_id,
         razorpay_signature: paymentResponse.razorpay_signature,
-        bookId
+        bookId: bookId,
+        comboId: comboId
       },
       {
         withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json' }
       }
     );
 
@@ -168,12 +162,13 @@ const verifyPayment = async ({
   }
 };
 
-// Alternative: Simple one-liner function for basic usage
-export const buyBook = (bookId, bookTitle, bookPrice) => {
+// Alternative: Simple one-liner function for quick usage
+export const buyItem = ({ bookId = null, comboId = null, title = '', price = 0 }) => {
   return initiateBookPurchase({
     bookId,
-    bookTitle,
-    bookPrice,
+    comboId,
+    title,
+    price,
     onSuccess: (message) => alert(message),
     onError: (error) => alert(`Error: ${error}`),
     onLoading: (loading) => console.log('Loading:', loading)

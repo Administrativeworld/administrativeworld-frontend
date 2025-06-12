@@ -1,14 +1,23 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const validateUser = createAsyncThunk('auth/validateUser', async (_, { rejectWithValue }) => {
-  try {
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/validate`, {}, { withCredentials: true });
-    return response.data.user;
-  } catch (error) {
-    return rejectWithValue(error.response.data.message);
+
+export const validateUser = createAsyncThunk(
+  'auth/validateUser',
+  async (_, { rejectWithValue }) => {
+    try {
+      // Add a small delay for initial load to ensure cookies are ready
+      if (document.readyState !== 'complete') {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/validate`, {}, { withCredentials: true });
+      return response.data.user;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: 'Validation failed' });
+    }
   }
-});
+);
 
 const initialState = {
   user: null,

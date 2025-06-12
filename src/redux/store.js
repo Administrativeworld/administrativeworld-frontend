@@ -20,6 +20,7 @@ import uploadProfilePicture from "./api/displayPicture";
 import fetchLearningCourse from "./api/learningCourseSlice";
 import manualEnrollStudent from "./api/manaulEnroll";
 import fetchBooks from "./api/booksSlice";
+import fetchBookCombos from "./api/fetchBookComboSlice";
 
 export const reduxStore = configureStore({
   reducer: {
@@ -43,6 +44,7 @@ export const reduxStore = configureStore({
     displayPicture: uploadProfilePicture,
     fetchLearningCourse: fetchLearningCourse,
     manualEnrollStudent: manualEnrollStudent,
-    books: fetchBooks
+    books: fetchBooks,
+    bookCombos: fetchBookCombos,
   }
 });

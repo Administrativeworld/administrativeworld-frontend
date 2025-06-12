@@ -38,6 +38,7 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 // Sample data - replace with your actual data
 const AUTHORS = [
@@ -314,12 +315,15 @@ const AdminBookCard = ({ book, onEdit, onDelete, onToggleStatus, onViewAnalytics
 
 function PublishedBooks() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { books, loading, filters, meta } = useSelector((state) => state.books);
 
   const [searchInput, setSearchInput] = useState(filters.search || '');
   const [viewMode, setViewMode] = useState('grid'); // grid or list
   const [showFilters, setShowFilters] = useState(false);
   const [selectedBooks, setSelectedBooks] = useState([]);
+
+  console.log(books)
 
   // Debounced search effect
   useEffect(() => {
@@ -491,11 +495,11 @@ function PublishedBooks() {
 
               <Button
                 size="sm"
-                onClick={() => console.log('Add new book')}
+                onClick={() => navigate('/admin/books/published/createcombo')}
                 className="gap-1 sm:gap-2 text-xs sm:text-sm"
               >
                 <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
-                Add Book
+                Create Combo
               </Button>
 
               <div className="flex border rounded-lg p-0.5 sm:p-1">
