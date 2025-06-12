@@ -21,22 +21,18 @@ const loadRazorpayScript = () => {
 };
 
 // Main function to buy course
-export async function buyCourse(courseId, userDetails, navigate) {
+export async function buyCourse(courseId, userDetails, navigate, couponCode = null) {
   const toastId = toast.loading("Processing payment...");
 
   try {
-    // Load Razorpay SDK
     const scriptLoaded = await loadRazorpayScript();
     if (!scriptLoaded) {
-      toast.error("Payment gateway failed to load. Please check your internet connection.");
+      toast.error("Payment gateway failed to load.");
       return;
     }
 
-    // Create payment order
-    const orderResponse = await createPaymentOrder(courseId);
-    console.log("Payment order created:", orderResponse);
+    const orderResponse = await createPaymentOrder(courseId, couponCode);
 
-    // Configure Razorpay options
     const razorpayOptions = {
       key: import.meta.env.VITE_RAZORPAY_KEY,
       amount: orderResponse.amount,
@@ -57,11 +53,9 @@ export async function buyCourse(courseId, userDetails, navigate) {
       }
     };
 
-    // Open Razorpay checkout
     const paymentObject = new window.Razorpay(razorpayOptions);
     paymentObject.open();
 
-    // Handle payment failure
     paymentObject.on("payment.failed", (response) => {
       console.error("Payment failed:", response.error);
       toast.error("Payment failed. Please try again.");
@@ -75,14 +69,13 @@ export async function buyCourse(courseId, userDetails, navigate) {
   }
 }
 
-// Create payment order
-async function createPaymentOrder(courseId) {
+// Create payment order (now accepts couponCode)
+async function createPaymentOrder(courseId, couponCode = null) {
   try {
-    const response = await axios.post(
-      PAYMENT_ENDPOINTS.CAPTURE,
-      { courseId: courseId },
-      { withCredentials: true }
-    );
+    const payload = { courseId };
+    if (couponCode) payload.couponCode = couponCode;
+
+    const response = await axios.post(PAYMENT_ENDPOINTS.CAPTURE, payload, { withCredentials: true });
 
     if (!response.data.success) {
       throw new Error(response.data.message);
@@ -96,18 +89,15 @@ async function createPaymentOrder(courseId) {
 
 // Handle successful payment
 async function handlePaymentSuccess(paymentResponse, courseId, navigate) {
-  const toastId = toast.loading("Verifying payment and enrolling...");
+  const toastId = toast.loading("Verifying payment...");
 
   try {
-    // Verify payment and enroll student (backend handles enrollment + emails)
     await verifyPaymentAndEnroll(paymentResponse, courseId);
-
-    toast.success("Payment successful! You are now enrolled in the course.");
+    toast.success("Payment successful! You're enrolled.");
     navigate(`/home/enrolled?id=${courseId}`);
-
   } catch (error) {
     console.error("Payment verification error:", error);
-    toast.error("Payment verification failed. Please contact support.");
+    toast.error("Verification failed. Please contact support.");
   } finally {
     toast.dismiss(toastId);
   }
@@ -123,28 +113,14 @@ async function verifyPaymentAndEnroll(paymentResponse, courseId) {
       courseId
     };
 
-    const response = await axios.post(
-      PAYMENT_ENDPOINTS.VERIFY,
-      verificationData,
-      { withCredentials: true }
-    );
+    const response = await axios.post(PAYMENT_ENDPOINTS.VERIFY, verificationData, { withCredentials: true });
 
     if (!response.data.success) {
       throw new Error(response.data.message);
     }
 
-    console.log("Payment verified and student enrolled successfully");
     return response.data;
-
   } catch (error) {
     throw new Error(error.response?.data?.message || "Payment verification failed");
   }
-}
-
-// Utility function to format currency
-export function formatCurrency(amount) {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR'
-  }).format(amount / 100);
 }
