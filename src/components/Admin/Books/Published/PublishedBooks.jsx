@@ -88,7 +88,6 @@ const AdminBookCard = ({ book, onEdit, onDelete, onToggleStatus, onViewAnalytics
       currency: 'INR'
     }).format(amount || 0);
   };
-  console.log(book)
   if (viewMode === 'list') {
     return (
       <Card className="hover:shadow-md transition-shadow">
@@ -323,7 +322,6 @@ function PublishedBooks() {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedBooks, setSelectedBooks] = useState([]);
 
-  console.log(books)
 
   // Debounced search effect
   useEffect(() => {
@@ -376,12 +374,6 @@ function PublishedBooks() {
 
   const handleRefresh = () => {
     dispatch(fetchBooks({ ...filters, adminView: true }));
-  };
-
-  const handleEdit = (book) => {
-    console.log('Edit book:', book);
-    // Navigate to edit page or open edit modal
-    // Example: navigate(`/admin/books/edit/${book._id}`);
   };
 
   const handleDelete = async (book) => {
@@ -861,7 +853,7 @@ function PublishedBooks() {
                 <AdminBookCard
                   key={book._id}
                   book={book}
-                  onEdit={handleEdit}
+                  onEdit={() => navigate(`/admin/books/published/edit/?id=${book._id}`)}
                   onDelete={handleDelete}
                   onToggleStatus={handleToggleStatus}
                   onViewAnalytics={handleViewAnalytics}

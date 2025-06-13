@@ -39,6 +39,7 @@ import CreateCombo from "./components/Admin/Books/Published/CreateCombo.jsx";
 import CouponDashboard from "./components/Admin/Coupons/CouponDashboard.jsx";
 import CouponForm from "./components/Admin/Coupons/CouponForm.jsx";
 import CouponCard from "./components/Admin/Coupons/CouponCard.jsx";
+import EditBook from "./components/Admin/Books/EditBook/EditBook.jsx";
 
 const LoadingScreen = () => (
   <div className="flex items-center justify-center min-h-screen bg-background">
@@ -171,6 +172,7 @@ const AdminRoutes = () => {
           <Route index element={<BooksIndex />} />
           <Route path="create" element={<CreateBook />} />
           <Route path="published" element={<PublishedBooks />} />
+          <Route path="published/edit" element={<EditBook />} />
           <Route path="published/createcombo" element={<CreateCombo />} />
         </Route>
 
