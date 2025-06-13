@@ -4,10 +4,12 @@ import { Button } from "../ui/button";
 import { Avatar } from "../ui/avatar";
 import { Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import { enableEditMode } from "@/redux/api/courseBuilderSlice";
 
 function CourseCard({ course, ButtonName, path }) {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loggedIn, user } = useSelector((state) => state.authUser);
   // Defensive check: return nothing if course is missing
@@ -99,7 +101,7 @@ function CourseCard({ course, ButtonName, path }) {
             <Button
               className="w-full mt-auto font-medium py-1.5 rounded-md transition-colors duration-200"
               variant="outline"
-              onClick={() => { navigate(path) }}
+              onClick={() => { navigate(path); dispatch(enableEditMode()) }}
             >
               Inspect
             </Button>

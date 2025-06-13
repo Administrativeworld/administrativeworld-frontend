@@ -105,7 +105,7 @@ const Footer = () => {
                   <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs sm:text-sm text-muted-foreground truncate">Active Users</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground truncate">Paid Users</p>
                   <p className="text-lg sm:text-xl font-bold">{metaData ? metaData.totalRegisteredStudent : 'N/A'}</p>
                 </div>
               </div>

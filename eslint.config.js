@@ -1,38 +1,53 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import react from 'eslint-plugin-react'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
+import eslintPluginReact from 'eslint-plugin-react';
+import eslintPluginJsxA11y from 'eslint-plugin-jsx-a11y';
+import eslintPluginImport from 'eslint-plugin-import';
+import eslintPluginPrettier from 'eslint-plugin-prettier';
+import prettierConfig from './.prettierrc.json';
 
 export default [
-  { ignores: ['dist'] },
   {
-    files: ['**/*.{js,jsx}'],
+    ignores: ['dist', 'build', 'node_modules'],
+  },
+  {
+    files: ['**/*.js', '**/*.jsx'],
     languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
-      parserOptions: {
-        ecmaVersion: 'latest',
-        ecmaFeatures: { jsx: true },
-        sourceType: 'module',
+      ecmaVersion: 2021,
+      sourceType: 'module',
+      globals: { // Add known globals if needed
+        React: 'readonly',
+        JSX: 'readonly',
       },
     },
-    settings: { react: { version: '18.3' } },
     plugins: {
-      react,
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
+      react: eslintPluginReact,
+      'jsx-a11y': eslintPluginJsxA11y,
+      import: eslintPluginImport,
+      prettier: eslintPluginPrettier,
     },
     rules: {
-      ...js.configs.recommended.rules,
-      ...react.configs.recommended.rules,
-      ...react.configs['jsx-runtime'].rules,
-      ...reactHooks.configs.recommended.rules,
-      'react/jsx-no-target-blank': 'off',
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+      // 👉 Core ESLint Recommended Rules
+      ...require('eslint/use-at-your-own-risk').recommended.rules,
+
+      // React Recommended Rules
+      ...eslintPluginReact.configs.recommended.rules,
+
+      // Additional Rules
+      'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
+
+      'import/order': ['warn', { 'newlines-between': 'always' }],
+      'import/no-unresolved': 'error',
+
+      // Accessibility Rules
+      ...eslintPluginJsxA11y.configs.recommended.rules,
+
+      // Prettier Integration
+      'prettier/prettier': ['error', prettierConfig],
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
     },
   },
-]
+];

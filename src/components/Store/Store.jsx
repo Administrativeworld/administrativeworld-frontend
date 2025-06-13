@@ -28,6 +28,7 @@ import {
   Mail
 } from 'lucide-react';
 import BookComboCard from './BookCombo/BookComboCard';
+import { fetchBookCombos } from '@/redux/api/fetchBookComboSlice';
 
 // Sample data - replace with your actual data
 const AUTHORS = [
@@ -60,6 +61,7 @@ export default function Store() {
   const [authorInput, setAuthorInput] = useState(filters.author || '');
   const [viewMode, setViewMode] = useState('grid'); // grid or list
   const [showFilters, setShowFilters] = useState(false); // For mobile filter toggle
+  const { combos, error } = useSelector((state) => state.bookCombos);
 
   // Debounced search effect
   useEffect(() => {
@@ -70,6 +72,18 @@ export default function Store() {
     }, 500);
     return () => clearTimeout(timer);
   }, [searchInput, dispatch, filters.search]);
+  //fetch combo
+  useEffect(() => {
+    dispatch(fetchBookCombos());
+  }, [dispatch]);
+  let totalAvgSavings = 0
+  combos.forEach((combo) => {
+    const originalTotal = combo.comboPrice;
+    const finalPrice = combo.finalPrice;
+    const savings = originalTotal - finalPrice;
+    const percentage = Math.round((savings / originalTotal) * 100);
+    totalAvgSavings = totalAvgSavings + percentage
+  })
 
   // Debounced author filter effect
   useEffect(() => {
@@ -534,7 +548,7 @@ export default function Store() {
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm text-muted-foreground truncate">Available Combos</p>
-                    <p className="text-lg sm:text-xl font-bold text-yellow-700 dark:text-yellow-400">12</p>
+                    <p className="text-lg sm:text-xl font-bold text-yellow-700 dark:text-yellow-400">{combos.length}</p>
                   </div>
                 </div>
               </div>
@@ -546,7 +560,7 @@ export default function Store() {
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm text-muted-foreground truncate">Avg. Savings</p>
-                    <p className="text-lg sm:text-xl font-bold text-green-700 dark:text-green-400">35%</p>
+                    <p className="text-lg sm:text-xl font-bold text-green-700 dark:text-green-400">{(totalAvgSavings) / combos.length}%</p>
                   </div>
                 </div>
               </div>
@@ -558,7 +572,7 @@ export default function Store() {
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm text-muted-foreground truncate">Free Combos</p>
-                    <p className="text-lg sm:text-xl font-bold text-blue-700 dark:text-blue-400">5</p>
+                    <p className="text-lg sm:text-xl font-bold text-blue-700 dark:text-blue-400">0</p>
                   </div>
                 </div>
               </div>
@@ -570,7 +584,7 @@ export default function Store() {
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm text-muted-foreground truncate">Top Rated</p>
-                    <p className="text-lg sm:text-xl font-bold text-purple-700 dark:text-purple-400">4.8★</p>
+                    <p className="text-lg sm:text-xl font-bold text-purple-700 dark:text-purple-400">N/A</p>
                   </div>
                 </div>
               </div>

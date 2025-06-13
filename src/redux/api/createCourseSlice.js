@@ -18,51 +18,12 @@ export const createCourse = createAsyncThunk(
       instructions,
       couponCode,
     } = courseDetails;
-    // try {
-    //   let thumbnailUrl = "";
-    //   if (thumbnail) {
-    //     const options = {
-    //       maxSizeMB: 1,
-    //       maxWidthOrHeight: 1920,
-    //       useWebWorker: true,
-    //     };
-    //     const compressedThumbnail = await imageCompression(thumbnail, options);
-    //     const formData = new FormData();
-    //     formData.append("file", compressedThumbnail);
-    //     formData.append("VITE_AW_COURSES_UPLOAD_PRESET", "aw-images");
-
-    //     const uploadResponse = await axios.post(
-    //       `${import.meta.env.VITE_CLOUDINARY_URL}`,
-    //       formData
-    //     );
-    //     thumbnailUrl = uploadResponse.data.secure_url;
-    //   }
-
-    //   // Create course with the processed thumbnail URL
-    //   const response = await axios.post(
-    //     `${import.meta.env.VITE_BASE_URL}/courses/createCourse`,
-    //     {
-    //       courseName,
-    //       courseDescription,
-    //       price,
-    //       category,
-    //       whatYouWillLearn,
-    //       tag,
-    //       instructions,
-    //       couponCode,
-    //       thumbnail: thumbnailUrl,
-    //     },
-    //     { withCredentials: true }
-    //   );
-    //   return { status: response.status, data: response.data };
-    // } catch (error) {
-    //   return rejectWithValue({
-    //     status: error.response?.status ?? "Unknown error",
-    //     message: error.response?.data?.message ?? "An error occurred",
-    //   });
-    // }
     try {
       let thumbnailUrl = "";
+      let thumbnail_public_id = ""
+      let thumbnail_format = ""
+      let thumbnail_resource_type = ""
+      let thumbnail_bytes = ""
 
       if (thumbnail) {
         // 1. Compress thumbnail
@@ -94,6 +55,10 @@ export const createCourse = createAsyncThunk(
         );
 
         thumbnailUrl = uploadResponse.data.secure_url;
+        thumbnail_public_id = uploadResponse.data.public_id
+        thumbnail_format = uploadResponse.data.format
+        thumbnail_resource_type = uploadResponse.data.resource_type
+        thumbnail_bytes = uploadResponse.data.bytes
       }
 
       // 5. Send course creation request to backend
@@ -109,6 +74,10 @@ export const createCourse = createAsyncThunk(
           instructions,
           couponCode,
           thumbnail: thumbnailUrl,
+          thumbnail_public_id,
+          thumbnail_format,
+          thumbnail_resource_type,
+          thumbnail_bytes
         },
         { withCredentials: true }
       );

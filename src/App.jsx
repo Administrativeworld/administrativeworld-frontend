@@ -11,7 +11,7 @@ import Courses from "./components/Admin/Courses.jsx";
 import CoursesList from "./components/Admin/CoursesList.jsx";
 import Drafts from "./components/Admin/Drafts.jsx";
 import Published from "./components/Admin/Published.jsx";
-import CourseBuilderStepper from "./components/Form/CourseBuilderStepper.jsx";
+import CourseBuilderStepper from "./components/Admin/CreateCourses/CourseBuilderStepper.jsx";
 import DiscoverCourses from "./components/Home/DiscoverCourses.jsx";
 import Home from "./components/Home/Home.jsx";
 import HomePage from "./components/Home/HomePage.jsx";

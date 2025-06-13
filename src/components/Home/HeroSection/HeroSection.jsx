@@ -80,7 +80,7 @@ export default function HeroSection({ metaData }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const achievements = [
-    { icon: Users, label: "Registered Students", value: `${metaData ? metaData.totalRegisteredStudent : 'N/A'}+`, color: "blue" },
+    { icon: Users, label: "Paid Users", value: `${metaData ? metaData.totalRegisteredStudent : 'N/A'}+`, color: "blue" },
     { icon: BookOpen, label: "Study Materials", value: `${metaData ? metaData.totalStudyMaterial : 'N/A'}+`, color: "green" },
     // { icon: Trophy, label: "Success Rate", value: "95%", color: "purple" },
     // { icon: Award, label: "Expert Faculty", value: "50+", color: "orange" }
