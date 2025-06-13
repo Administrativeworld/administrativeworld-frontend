@@ -8,9 +8,9 @@ export default function CouponDashboard() {
 
   return (
     <div className="p-8 space-y-8">
-      <h2 className="text-2xl font-bold">🎟️ Coupon Hub</h2>
+      <h2 className="text-2xl font-bold mx-auto my-auto">🎟️ Coupon Hub</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-11 md:grid-cols-2 gap-8">
         <Card className="cursor-pointer hover:shadow-lg transition-all">
           <CardContent className="p-6 space-y-4">
             <h3 className="text-lg font-semibold">Create Coupon</h3>
@@ -23,7 +23,7 @@ export default function CouponDashboard() {
           <CardContent className="p-6 space-y-4">
             <h3 className="text-lg font-semibold">Manage Coupons</h3>
             <p>View or update all your existing coupons.</p>
-            <Button variant="secondary" onClick={() => navigate("/admin/coupon/manage")}>
+            <Button variant="secondary" onClick={() => navigate("/admin/coupon/edit")}>
               View Coupons →
             </Button>
           </CardContent>

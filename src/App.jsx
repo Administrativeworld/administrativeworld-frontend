@@ -38,6 +38,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import CreateCombo from "./components/Admin/Books/Published/CreateCombo.jsx";
 import CouponDashboard from "./components/Admin/Coupons/CouponDashboard.jsx";
 import CouponForm from "./components/Admin/Coupons/CouponForm.jsx";
+import CouponCard from "./components/Admin/Coupons/CouponCard.jsx";
 
 const LoadingScreen = () => (
   <div className="flex items-center justify-center min-h-screen bg-background">
@@ -178,6 +179,7 @@ const AdminRoutes = () => {
         <Route path="category" element={<Categories />} />
         <Route path="coupon" element={<CouponDashboard />} />
         <Route path="coupon/create" element={<CouponForm />} />
+        <Route path="coupon/edit" element={<CouponCard />} />
       </Route>
 
     </Routes>
