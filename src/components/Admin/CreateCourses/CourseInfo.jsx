@@ -25,7 +25,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { getCategory } from "@/redux/api/getCategorySlice";
 import PrimarySpinner from "../../Loaders/PrimarySpinner";
-import CoursePreview from "../CoursePreview";
+import CoursePreview from "./CoursePreview";
 import { nextStep, setCourseBuilderId } from "@/redux/api/courseBuilderSlice";
 import { ArrowRight } from "@mynaui/icons-react";
 

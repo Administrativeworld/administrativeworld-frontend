@@ -85,7 +85,6 @@ export default function HeroSection({ metaData }) {
     // { icon: Trophy, label: "Success Rate", value: "95%", color: "purple" },
     // { icon: Award, label: "Expert Faculty", value: "50+", color: "orange" }
   ];
-  console.log('HeroSEction', metaData)
   // Auto-slide functionality
   useEffect(() => {
     if (!isAutoPlaying) return;

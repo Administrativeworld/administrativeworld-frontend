@@ -10,36 +10,37 @@ import AdminHome from "./components/Admin/AdminHome.jsx";
 import Courses from "./components/Admin/Courses.jsx";
 import CoursesList from "./components/Admin/CoursesList.jsx";
 import Drafts from "./components/Admin/Drafts.jsx";
-import Published from "./components/Admin/Published.jsx";
+import Published from "./components/Admin/PublishedCoursePage/Published.jsx";
 import CourseBuilderStepper from "./components/Admin/CreateCourses/CourseBuilderStepper.jsx";
 import DiscoverCourses from "./components/Home/DiscoverCourses.jsx";
 import Home from "./components/Home/Home.jsx";
 import HomePage from "./components/Home/HomePage.jsx";
 import CoursePage from "./components/Discover/CoursePage.jsx";
 import UserProfile from "./components/User/UserProfile.jsx";
-import EnrolledCoursePage from "./components/User/EnrolledCoursePage.jsx";
+import EnrolledCoursePage from "./components/User/EnrolledCourse/EnrolledCoursePage.jsx";
 import AboutUs from "./components/AboutUs/AboutUs.jsx";
 import ContactUs from "./components/ContactUs/ContactUs.jsx";
-// import ComingSoon from "./components/AlertScreens/ComingSoon.jsx";
 import Categories from "./components/Admin/Categories.jsx";
-import PublishedCoursePage from "./components/Admin/NestedComponents/PublishedCoursePage.jsx";
 import ResetPasswordPage from "./components/Form/ResetPasswordPage.jsx";
 import AdminEnrollStudentForm from "./components/Admin/manualEnrollStudent.jsx";
 import Books from "./components/Admin/Books/Books.jsx";
 import CreateBook from "./components/Admin/Books/CreateBook/CreateBook.jsx";
 import BooksIndex from "./components/Admin/Books/BooksIndex.jsx";
-// import ExploreBooks from "./components/Store/Store.jsx";
 import Store from "./components/Store/Store.jsx";
 import PublishedBooks from "./components/Admin/Books/Published/PublishedBooks.jsx";
-
-// Loading Component
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import CreateCombo from "./components/Admin/Books/Published/CreateCombo.jsx";
 import CouponDashboard from "./components/Admin/Coupons/CouponDashboard.jsx";
 import CouponForm from "./components/Admin/Coupons/CouponForm.jsx";
 import CouponCard from "./components/Admin/Coupons/CouponCard.jsx";
 import EditBook from "./components/Admin/Books/EditBook/EditBook.jsx";
+import ExerciseManagement from "./components/Admin/CourseExecrise/Management/ExerciseManagement.jsx";
+import EditCourseBuilderStepper from "./components/Admin/EditCourse/EditCourseBuilderStepper.jsx";
+
+// Import the 404 component
+import NotFound from "./components/NotFoundPage/NotFound.jsx";
+
+// Loading Component
+import React from 'react';
 
 const LoadingScreen = () => (
   <div className="flex items-center justify-center min-h-screen bg-background">
@@ -58,7 +59,6 @@ const LoadingScreen = () => (
     </div>
   </div>
 );
-
 
 function App() {
   const dispatch = useDispatch();
@@ -112,7 +112,7 @@ function App() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         {/* Public Routes */}
-        <Route path="/home" element={<Home />}>
+        <Route path="home" element={<Home />}>
           <Route index element={<HomePage />} />
           <Route path="course" element={<CoursePage />} />
           <Route path="explore" element={<DiscoverCourses />} />
@@ -129,6 +129,9 @@ function App() {
             path="user"
             element={loggedIn ? <UserProfile /> : <Navigate to="/login" replace />}
           />
+
+          {/* Catch-all for /home subroutes */}
+          <Route path="*" element={<NotFound />} />
         </Route>
 
         {/* Admin Routes (Only accessible by Admins) */}
@@ -143,8 +146,8 @@ function App() {
           }
         />
 
-        {/* Catch-all Route (Redirect unknown routes to Home) */}
-        <Route path="*" element={<Navigate to="/home" replace />} />
+        {/* 404 Route - Must be last (Catch-all for unknown routes) */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );
@@ -163,7 +166,9 @@ const AdminRoutes = () => {
           <Route path="create" element={<CourseBuilderStepper />} />
           <Route path="draft" element={<Drafts />} />
           <Route path="published" element={<Published />}>
-            <Route path=":courseName" element={<PublishedCoursePage />} />
+            <Route path=":courseName" element={<EditCourseBuilderStepper />} />
+            <Route path="execrise" element={<ExerciseManagement />} />
+            {/* <Route path="execrise/canvas" element={<ImageEditor />} /> */}
           </Route>
         </Route>
 
@@ -182,8 +187,10 @@ const AdminRoutes = () => {
         <Route path="coupon" element={<CouponDashboard />} />
         <Route path="coupon/create" element={<CouponForm />} />
         <Route path="coupon/edit" element={<CouponCard />} />
-      </Route>
 
+        {/* Catch-all for /admin subroutes */}
+        <Route path="*" element={<NotFound />} />
+      </Route>
     </Routes>
   );
 };

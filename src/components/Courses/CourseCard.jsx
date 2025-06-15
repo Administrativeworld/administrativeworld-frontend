@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { enableEditMode } from "@/redux/api/courseBuilderSlice";
+import CourseInspect from "../Admin/PublishedCoursePage/CourseInspect";
 
 function CourseCard({ course, ButtonName, path }) {
   const dispatch = useDispatch();
@@ -98,13 +99,7 @@ function CourseCard({ course, ButtonName, path }) {
 
           <div className="border-t w-full mb-1"></div>
           {ButtonName === "Inspect" ? (
-            <Button
-              className="w-full mt-auto font-medium py-1.5 rounded-md transition-colors duration-200"
-              variant="outline"
-              onClick={() => { navigate(path); dispatch(enableEditMode()) }}
-            >
-              Inspect
-            </Button>
+            <CourseInspect course={course} />
           ) : isEnrolled(course._id) ? (
             <Button
               className="w-full mt-auto font-medium py-1.5 rounded-md transition-colors duration-200"

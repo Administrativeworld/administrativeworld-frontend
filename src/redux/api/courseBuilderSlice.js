@@ -64,6 +64,7 @@ const initialState = {
   courseId: null,
   sectionId: null,
   subSection: [],
+
   sections: [],
   // New fields for edit mode
   isEditMode: false,

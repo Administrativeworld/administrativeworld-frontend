@@ -26,7 +26,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { getCategory } from "@/redux/api/getCategorySlice";
 import PrimarySpinner from "../../Loaders/PrimarySpinner";
-import CoursePreview from "../CoursePreview";
+import CoursePreview from "../CreateCourses/CoursePreview";
 import { ArrowRight } from "@mynaui/icons-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import imageCompression from "browser-image-compression";
