@@ -1,0 +1,12 @@
+# VITE_RAZORPAY_KEY=rzp_test_4no7TTAr9Vlqfb
+VITE_RAZORPAY_KEY=rzp_live_HT62I1EULhRe5H
+VITE_BASE_URL=http://localhost:8000/api/v1
+VITE_CLOUDINARY_URL=https://api.cloudinary.com/v1_1/dqvkbnrlu/image/upload
+VITE_CLOUDINARY_CLOUD_NAME=dqvkbnrlu
+VITE_CLOUDINARY_RAW_URL=https://api.cloudinary.com/v1_1/dqvkbnrlu/raw/upload
+VITE_AW_PROFILE_UPLOAD_PRESET=aw-profile-images
+VITE_AW_COURSES_UPLOAD_PRESET=aw-courses-images
+VITE_AW_COMBO_THUMBNAIL_UPLOAD_PRESET=combo_thumbnail
+VITE_AW_BOOKPDF_UPLOAD_PRESET=books_pdf
+VITE_CLOUDINARY_API_KEY=365882128442531
+GENERATE_SOURCEMAP=true
