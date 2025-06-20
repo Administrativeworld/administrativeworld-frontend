@@ -45,9 +45,10 @@ function ExerciseManagement() {
     setLoadingAnswers(true);
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/exercise/getUserAnswers?exerciseId=${exerciseId}`, {},
+        `${import.meta.env.VITE_BASE_URL}/exercise/getUserAnswersAdmin?exerciseId=${exerciseId}`, {},
         { withCredentials: true }
       );
+      console.log(response);
       setUserAnswers(response.data.answers || []);
     } catch (err) {
       console.error("Error fetching user answers:", err);

@@ -41,6 +41,7 @@ import NotFound from "./components/NotFoundPage/NotFound.jsx";
 
 // Loading Component
 import React from 'react';
+import CanvasEditor from "./components/Admin/CourseExecrise/Management/CanvasEditor.jsx";
 
 const LoadingScreen = () => (
   <div className="flex items-center justify-center min-h-screen bg-background">
@@ -168,7 +169,8 @@ const AdminRoutes = () => {
           <Route path="published" element={<Published />}>
             <Route path=":courseName" element={<EditCourseBuilderStepper />} />
             <Route path="execrise" element={<ExerciseManagement />} />
-            {/* <Route path="execrise/canvas" element={<ImageEditor />} /> */}
+            <Route path="execrise/canvas" element={<CanvasEditor />} /> 
+           
           </Route>
         </Route>
 

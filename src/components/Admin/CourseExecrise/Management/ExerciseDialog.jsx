@@ -22,6 +22,7 @@ function ExerciseDialog({
   onSetSelectedUser,
 }) {
   const navigate = useNavigate();
+  // console.log("here is answer id",answer._id); 
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -127,7 +128,7 @@ function ExerciseDialog({
                                   </Button>
                                   <Button
                                     size="sm"
-                                    onClick={() => navigate(`canvas/?url=${answer.attachmentUrl}`)}
+                                    onClick={() => navigate(`canvas/?url=${encodeURIComponent(answer.attachmentUrl)}&answerId=${answer._id}&questionId=${answer.question._id}&userId=${answer.user._id}`)}
                                   >
                                     <Edit3 className="h-4 w-4 mr-2" />
                                     Edit with Canvas
