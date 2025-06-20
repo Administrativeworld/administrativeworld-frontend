@@ -126,82 +126,82 @@ function CanvasEditor() {
   };
 
   const uploadToCloudinary = () => {
-  const bgCanvas = bgCanvasRef.current;
-  const drawCanvas = drawCanvasRef.current;
+    const bgCanvas = bgCanvasRef.current;
+    const drawCanvas = drawCanvasRef.current;
 
-  const combinedCanvas = document.createElement('canvas');
-  combinedCanvas.width = bgCanvas.width;
-  combinedCanvas.height = bgCanvas.height;
+    const combinedCanvas = document.createElement('canvas');
+    combinedCanvas.width = bgCanvas.width;
+    combinedCanvas.height = bgCanvas.height;
 
-  const ctx = combinedCanvas.getContext('2d');
-  ctx.drawImage(bgCanvas, 0, 0);
-  ctx.drawImage(drawCanvas, 0, 0);
+    const ctx = combinedCanvas.getContext('2d');
+    ctx.drawImage(bgCanvas, 0, 0);
+    ctx.drawImage(drawCanvas, 0, 0);
 
-  combinedCanvas.toBlob(async (blob) => {
-    if (!blob) {
-      alert("❌ Blob creation failed.");
-      return;
-    }
+    combinedCanvas.toBlob(async (blob) => {
+      if (!blob) {
+        alert("❌ Blob creation failed.");
+        return;
+      }
 
-    const publicId = extractPublicId(imageUrl);
-    const uploadPreset = "answers_attachments";
-    const resourceType = "image";
+      const publicId = extractPublicId(imageUrl);
+      const uploadPreset = "answers_attachments";
+      const resourceType = "image";
 
-    setLoading(true);
-    try {
-      const sigRes = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/generate/generateSignatureOverwrite`,
-        {
-          uploadPreset,
-          publicId,
-          overwrite: true,
-          resourceType,
-        },
-        { headers: { 'Content-Type': 'application/json' } }
-      );
+      setLoading(true);
+      try {
+        const sigRes = await axios.post(
+          `${import.meta.env.VITE_BASE_URL}/generate/generateSignatureOverwrite`,
+          {
+            uploadPreset,
+            publicId,
+            overwrite: true,
+            resourceType,
+          },
+          { headers: { 'Content-Type': 'application/json' } }
+        );
 
-      const { signature, timestamp } = sigRes.data;
+        const { signature, timestamp } = sigRes.data;
 
-      const formData = new FormData();
-      formData.append("file", blob);
-      formData.append("api_key", import.meta.env.VITE_CLOUDINARY_API_KEY);
-      formData.append("upload_preset", uploadPreset);
-      formData.append("timestamp", timestamp);
-      formData.append("signature", signature);
-      formData.append("public_id", publicId);
-      formData.append("overwrite", "true");
+        const formData = new FormData();
+        formData.append("file", blob);
+        formData.append("api_key", import.meta.env.VITE_CLOUDINARY_API_KEY);
+        formData.append("upload_preset", uploadPreset);
+        formData.append("timestamp", timestamp);
+        formData.append("signature", signature);
+        formData.append("public_id", publicId);
+        formData.append("overwrite", "true");
 
-      // ✅ FINAL CORRECT CALL
-      const uploadRes = await axios.post(
-        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`,
-        formData
-      );
+        // ✅ FINAL CORRECT CALL6850f067e08e1a8111a29ed4
+        const uploadRes = await axios.post(
+          `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`,
+          formData
+        );
 
-      const newUrl = uploadRes.data.secure_url;
+        const newUrl = uploadRes.data.secure_url;
 
-      await axios.put(
-        `${import.meta.env.VITE_BASE_URL}/exercise/updateUserAnswerAttachment/${answerId}`,
-        {
-          attachmentUrl: newUrl,
-          format: uploadRes.data.format,
-          bytes: uploadRes.data.bytes,
-          resource_type: uploadRes.data.resource_type,
-        },
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true,
-        }
-      );
+        await axios.put(
+          `${import.meta.env.VITE_BASE_URL}/exercise/updateUserAnswerAttachment/${answerId}`,
+          {
+            attachmentUrl: newUrl,
+            format: uploadRes.data.format,
+            bytes: uploadRes.data.bytes,
+            resource_type: uploadRes.data.resource_type,
+          },
+          {
+            headers: { 'Content-Type': 'application/json' },
+            withCredentials: true,
+          }
+        );
 
-      alert("✅ Image successfully saved.");
-    } catch (error) {
-      console.error("❌ Upload error:", error.response?.data || error);
-      alert("❌ Upload failed. Check console.");
-    } finally {
-      setLoading(false);
-    }
-  }, 'image/png');
-};
+        alert("✅ Image successfully saved.");
+      } catch (error) {
+        console.error("❌ Upload error:", error.response?.data || error);
+        alert("❌ Upload failed. Check console.");
+      } finally {
+        setLoading(false);
+      }
+    }, 'image/png');
+  };
 
 
   return (
