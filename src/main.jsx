@@ -8,13 +8,16 @@ import { ThemeProvider } from './style/ThemeContext'
 import { reduxStore } from './redux/store.js'
 import { Provider } from 'react-redux'
 import { Toaster } from 'react-hot-toast'
+import { HelmetProvider } from 'react-helmet-async'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ThemeProvider>
       <Provider store={reduxStore}>
         <BrowserRouter>
-          <App />
+          <HelmetProvider>
+            <App />
+          </HelmetProvider>
           <Toaster />
         </BrowserRouter>
       </Provider>
