@@ -49,7 +49,7 @@ const ExerciseViewer = ({
   const [attachments, setAttachments] = useState({});
   const [uploadingFiles, setUploadingFiles] = useState({});
   const [error, setError] = useState(null);
-
+    const [isAnswerChecked, setisAnswerChecked] = useState({});
   // New state for dialogs
   const [attachmentDialog, setAttachmentDialog] = useState({ open: false, attachment: null });
   const [uploadConfirmDialog, setUploadConfirmDialog] = useState({ open: false, file: null, questionId: null });
@@ -98,6 +98,7 @@ const ExerciseViewer = ({
         const saved = {};
         const submitted = new Set();
         const attachmentData = {};
+        const checkedStatus = {}
 
         data.answers.forEach(answer => {
           const questionId = answer.question._id || answer.question;
@@ -118,12 +119,13 @@ const ExerciseViewer = ({
               resourceType: answer.attachment_resource_type
             };
           }
+          checkedStatus[questionId] = answer.isChecked;
         });
-
         setUserAnswers(answers);
         setSavedAnswers(saved);
         setSubmittedQuestions(submitted);
         setAttachments(attachmentData);
+        setisAnswerChecked(checkedStatus);
       }
     } catch (error) {
       console.error("Error fetching user answers:", error);
@@ -527,6 +529,7 @@ const ExerciseViewer = ({
                   <span className="text-sm">
                     Attachment ({Math.round(attachments[currentQuestion._id].bytes / 1024)} KB)
                   </span>
+                  <span className='px-40'><input type="checkbox" checked={isAnswerChecked[currentQuestion._id]} readOnly disabled className="form-checkbox h-4 w-4 text-green-800"/>       {isAnswerChecked[currentQuestion._id] ? "Reviewed by Manisha Singh" : "Not Reviewed"}</span>
                 </div>
                 <div className="flex gap-2">
                   <Button
