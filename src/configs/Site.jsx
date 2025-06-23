@@ -9,12 +9,11 @@ import {
   BarChart,
   Bell,
   Notebook,
-  SquarePlus,
   LifeBuoy,
   BookCheck,
-  BookOpen
+  BookOpen,
+  Settings, LogOut, SquarePlus, FileEdit, Newspaper
 } from "lucide-react";
-import { Settings, LogOut } from "lucide-react";
 
 export const adminNavLinks = [
   {
@@ -88,7 +87,7 @@ export const adminNavBarLinks = [
     icon: <Bell />,
   },
 ];
-export const adminCourseCardData = [
+export const adminCourseManagement = [
   {
     title: "Create New",
     description: "Start creating new courses with interactive content, assessments, and multimedia resources.",
@@ -130,6 +129,57 @@ export const adminCourseCardData = [
       "Live Course Management",
       "Analytics & Performance",
       "Student Progress Tracking"
+    ],
+    buttonText: "View Published",
+    variant: "outline",
+    bgColor: "from-secondary/10 to-transparent",
+    iconBg: "bg-secondary/20 text-secondary-foreground group-hover:bg-secondary group-hover:text-secondary-foreground",
+    badgeColor: "bg-blue-500"
+  },
+];
+
+export const adminArticleManagement = [
+  {
+    title: "Create New Article",
+    description: "Start writing and publishing SEO-friendly articles to engage your audience and improve search visibility.",
+    icon: <SquarePlus className="h-6 w-6" />,
+    path: "/admin/article/create",
+    features: [
+      "Rich Text Editor",
+      "SEO Meta Tags",
+      "Category & Tag Management"
+    ],
+    buttonText: "Create New Article",
+    variant: "primary",
+    bgColor: "from-primary/5 to-transparent",
+    iconBg: "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground",
+    badgeColor: "bg-green-500"
+  },
+  {
+    title: "Draft Articles",
+    description: "Manage and edit articles saved as drafts. Continue writing or prepare them for publishing anytime.",
+    icon: <FileEdit className="h-6 w-6" />,
+    path: "/admin/article/draft",
+    features: [
+      "Autosave Drafts",
+      "Quick Editing",
+      "Preview Articles"
+    ],
+    buttonText: "View Drafts",
+    variant: "secondary",
+    bgColor: "from-orange/10 to-transparent",
+    iconBg: "bg-orange-100 text-orange-600 group-hover:bg-orange-500 group-hover:text-white",
+    badgeColor: "bg-orange-500"
+  },
+  {
+    title: "Published Articles",
+    description: "View and manage all live articles. Track their views, update content, or unpublish if needed.",
+    icon: <Newspaper className="h-6 w-6" />,
+    path: "/admin/article/published",
+    features: [
+      "Live Article Management",
+      "View Analytics (Views)",
+      "SEO Performance Updates"
     ],
     buttonText: "View Published",
     variant: "outline",

@@ -21,6 +21,7 @@ import fetchLearningCourse from "./api/learningCourseSlice";
 import manualEnrollStudent from "./api/manaulEnroll";
 import fetchBooks from "./api/booksSlice";
 import fetchBookCombos from "./api/fetchBookComboSlice";
+import selectCreateArticle from "./api/createArticleSlice";
 
 export const reduxStore = configureStore({
   reducer: {
@@ -46,5 +47,6 @@ export const reduxStore = configureStore({
     manualEnrollStudent: manualEnrollStudent,
     books: fetchBooks,
     bookCombos: fetchBookCombos,
+    createArticle: selectCreateArticle
   }
 });

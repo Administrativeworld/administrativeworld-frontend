@@ -2,9 +2,9 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-import { SquarePlus, LifeBuoy, BookCheck, ArrowRight, FileText, Sparkles } from 'lucide-react';
+import { ArrowRight, FileText, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { adminCourseCardData } from "../../configs/Site"
+import { adminCourseManagement } from "../../configs/Site"
 
 function CoursesList() {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ function CoursesList() {
 
         {/* Course Management Cards */}
         <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-8 max-w-7xl mx-auto">
-          {adminCourseCardData.map((card, index) => (
+          {adminCourseManagement.map((card, index) => (
             <Card
               key={index}
               className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer relative overflow-hidden h-full"
@@ -73,43 +73,6 @@ function CoursesList() {
             </Card>
           ))}
         </div>
-
-        {/* Quick Stats Section */}
-        {/* <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-          <Card className="text-center border-0 bg-muted/50">
-            <CardContent className="pt-6">
-              <div className="text-3xl font-bold text-primary mb-2">∞</div>
-              <p className="text-sm text-muted-foreground">Unlimited Courses</p>
-            </CardContent>
-          </Card>
-          <Card className="text-center border-0 bg-muted/50">
-            <CardContent className="pt-6">
-              <div className="text-3xl font-bold text-primary mb-2">Auto</div>
-              <p className="text-sm text-muted-foreground">Save & Backup</p>
-            </CardContent>
-          </Card>
-          <Card className="text-center border-0 bg-muted/50">
-            <CardContent className="pt-6">
-              <div className="text-3xl font-bold text-primary mb-2">Real-time</div>
-              <p className="text-sm text-muted-foreground">Analytics</p>
-            </CardContent>
-          </Card>
-        </div> */}
-
-        {/* Call to Action */}
-        {/* <div className="text-center mt-16">
-          <p className="text-muted-foreground mb-4">
-            Ready to create your next course?
-          </p>
-          <Button
-            onClick={() => navigate("/admin/course/create")}
-            size="lg"
-            className="px-8"
-          >
-            <SquarePlus className="mr-2 h-5 w-5" />
-            Start Creating Now
-          </Button>
-        </div> */}
       </div>
     </div>
   );

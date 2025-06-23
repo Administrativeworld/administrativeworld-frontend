@@ -42,6 +42,11 @@ import NotFound from "./components/NotFoundPage/NotFound.jsx";
 // Loading Component
 import React from 'react';
 import CanvasEditor from "./components/Admin/CourseExecrise/Management/CanvasEditor.jsx";
+import Article from "./components/Admin/Articles/ArticlePanel.jsx";
+import ArticleCreateSteps from "./components/Admin/Articles/CreateArticle/ArticleCreateSteps.jsx";
+import ArticlePanelComponent from "./components/Admin/Articles/ArticlePanelComponent/ArticlePanelComponent.jsx";
+import ArticlePanel from "./components/Admin/Articles/ArticlePanel.jsx";
+import PublishedArticle from "./components/Admin/Articles/PublishedArticle/PublishedArticle.jsx";
 
 const LoadingScreen = () => (
   <div className="flex items-center justify-center min-h-screen bg-background">
@@ -169,8 +174,8 @@ const AdminRoutes = () => {
           <Route path="published" element={<Published />}>
             <Route path=":courseName" element={<EditCourseBuilderStepper />} />
             <Route path="execrise" element={<ExerciseManagement />} />
-            <Route path="execrise/canvas" element={<CanvasEditor />} /> 
-           
+            <Route path="execrise/canvas" element={<CanvasEditor />} />
+
           </Route>
         </Route>
 
@@ -181,6 +186,13 @@ const AdminRoutes = () => {
           <Route path="published" element={<PublishedBooks />} />
           <Route path="published/edit" element={<EditBook />} />
           <Route path="published/createcombo" element={<CreateCombo />} />
+        </Route>
+
+        {/* Article managment  */}
+        <Route path="article" element={<ArticlePanel />}>
+          <Route index element={<ArticlePanelComponent />} />
+          <Route path="create" element={<ArticleCreateSteps />} />
+          <Route path="published" element={<PublishedArticle />} />
         </Route>
 
         {/* Other Admin Routes */}
