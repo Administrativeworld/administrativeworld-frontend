@@ -25,6 +25,9 @@ import {
   Menu,
   X
 } from 'lucide-react';
+import { Helmet } from 'react-helmet';
+import dynamicMetaDataSeo from '@/configs/dynamicMetaDataSeo';
+import { useLocation } from 'react-router-dom';
 
 const SORT_OPTIONS = [
   { value: 'createdAt', label: 'Latest First', icon: Clock },
@@ -35,6 +38,8 @@ const SORT_OPTIONS = [
 ];
 
 function DiscoverCourses() {
+  const location = useLocation();
+  const currentUrl = `${import.meta.env.VITE_DOMAIN}${location.pathname}`;
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.getCategory);
   const { courses, totalPages, currentPage, loading } = useSelector((state) => state.courses);
@@ -167,7 +172,13 @@ function DiscoverCourses() {
   }) || [];
 
 
-  return (
+  return (<>
+    <Helmet>
+      <title>{dynamicMetaDataSeo.courses.title}</title>
+      <meta name="description" content={dynamicMetaDataSeo.courses.description} />
+      <meta name="keywords" content={dynamicMetaDataSeo.courses.keywords} />
+      <link rel="canonical" href={currentUrl} />
+    </Helmet>
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
         {/* Header Section */}
@@ -557,7 +568,7 @@ function DiscoverCourses() {
           </Card>
         )}
       </div>
-    </div>
+    </div></>
   );
 }
 

@@ -1,11 +1,22 @@
 // import DialogMenu from "../Navigation/DialogMenu"
-import { Outlet } from "react-router-dom"
+import { Outlet, useLocation } from "react-router-dom"
 import NavBar from "../Navigation/NavBar"
 import { SidebarInset, SidebarProvider } from "../ui/sidebar"
 import Footer from "../Navigation/Footer"
+import { Helmet } from "react-helmet"
+import dynamicMetaDataSeo from "@/configs/dynamicMetaDataSeo"
 
 function Home() {
-  return (
+  const location = useLocation();
+  const currentUrl = `${import.meta.env.VITE_DOMAIN}${location.pathname}`;
+  console.log(currentUrl)
+  return (<>
+    <Helmet>
+      <title>{dynamicMetaDataSeo.home.title}</title>
+      <meta name="description" content={dynamicMetaDataSeo.home.description} />
+      <meta name="keywords" content={dynamicMetaDataSeo.home.keywords} />
+      <link rel="canonical" href={currentUrl} />
+    </Helmet>
     <SidebarProvider>
       {/* <SidebarNav /> */}
       <SidebarInset>
@@ -21,7 +32,7 @@ function Home() {
         </main>
         <Footer />
       </SidebarInset>
-    </SidebarProvider>
+    </SidebarProvider></>
   )
 }
 

@@ -20,8 +20,13 @@ import {
   GraduationCap
 } from 'lucide-react';
 import Team from './team';
+import { Helmet } from 'react-helmet';
+import dynamicMetaDataSeo from '@/configs/dynamicMetaDataSeo';
+import { useLocation } from 'react-router-dom';
 
 const AboutUs = () => {
+  const location = useLocation();
+  const currentUrl = `${import.meta.env.VITE_DOMAIN}${location.pathname}`;
   const services = [
     {
       title: "Comprehensive Study Materials",
@@ -68,7 +73,14 @@ const AboutUs = () => {
     }
   ];
 
-  return (
+  return (<>
+    <Helmet>
+      <title>{dynamicMetaDataSeo.about.title}</title>
+      <meta name="description" content={dynamicMetaDataSeo.about.description} />
+      <meta name="keywords" content={dynamicMetaDataSeo.about.keywords} />
+      <link rel="canonical" href={currentUrl} />
+    </Helmet>
+
     <div className="min-h-screen ">
       {/* Hero Section */}
       <section className=" py-20 px-4">
@@ -83,7 +95,7 @@ const AboutUs = () => {
         </div>
       </section>
 
-      <Team/>
+      <Team />
 
       {/* Mission Section */}
       <section className="py-16 px-4">
@@ -187,6 +199,7 @@ const AboutUs = () => {
         </div>
       </section>
     </div>
+  </>
   );
 };
 

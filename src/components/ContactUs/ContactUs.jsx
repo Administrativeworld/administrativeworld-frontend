@@ -20,10 +20,15 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {
-  Mail, Phone, MapPin, Clock, MessageSquare, Send,Facebook, Twitter, Instagram, Youtube,
+  Mail, Phone, MapPin, Clock, MessageSquare, Send, Facebook, Twitter, Instagram, Youtube,
 } from 'lucide-react';
+import { Helmet } from 'react-helmet';
+import dynamicMetaDataSeo from '@/configs/dynamicMetaDataSeo';
+import { useLocation } from 'react-router-dom';
 
 const ContactUs = () => {
+  const location = useLocation();
+  const currentUrl = `${import.meta.env.VITE_DOMAIN}${location.pathname}`;
   const [formData, setFormData] = useState({
     fullname: '',
     email: '',
@@ -76,7 +81,14 @@ const ContactUs = () => {
     }
   };
 
-  return (
+  return (<>
+    <Helmet>
+      <title>{dynamicMetaDataSeo.contact.title}</title>
+      <meta name="description" content={dynamicMetaDataSeo.contact.description} />
+      <meta name="keywords" content={dynamicMetaDataSeo.contact.keywords} />
+      <link rel="canonical" href={currentUrl} />
+    </Helmet>
+
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="py-16 px-4">
@@ -168,12 +180,12 @@ const ContactUs = () => {
           <h2 className="text-2xl font-bold mb-6">Connect With Us</h2>
           <div className="flex justify-center space-x-6">
             <Button variant="outline" size="lg" className="rounded-full"><a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer">
-            <Facebook className="w-5 h-5" />
+              <Facebook className="w-5 h-5" />
             </a></Button>
             <Button variant="outline" size="lg" className="rounded-full"><Twitter className="w-5 h-5" /></Button>
             <Button variant="outline" size="lg" className="rounded-full"><Instagram className="w-5 h-5" /></Button>
             <Button asChild variant="outline" size="lg" className="rounded-full"><a href="https://www.youtube.com/@Admn_World" target="_blank" rel="noopener noreferrer">
-            <Youtube className="w-5 h-5" /></a></Button>
+              <Youtube className="w-5 h-5" /></a></Button>
           </div>
         </div>
       </section>
@@ -199,6 +211,7 @@ const ContactUs = () => {
         </div>
       </section>
     </div>
+  </>
   );
 };
 

@@ -29,6 +29,9 @@ import {
 } from 'lucide-react';
 import BookComboCard from './BookCombo/BookComboCard';
 import { fetchBookCombos } from '@/redux/api/fetchBookComboSlice';
+import { Helmet } from 'react-helmet';
+import dynamicMetaDataSeo from '@/configs/dynamicMetaDataSeo';
+import { useLocation } from 'react-router-dom';
 
 // Sample data - replace with your actual data
 const AUTHORS = [
@@ -54,6 +57,8 @@ const SORT_OPTIONS = [
 ];
 
 export default function Store() {
+  const location = useLocation();
+  const currentUrl = `${import.meta.env.VITE_DOMAIN}${location.pathname}`;
   const dispatch = useDispatch();
   const { books, loading, filters, meta } = useSelector((state) => state.books);
 
@@ -158,7 +163,14 @@ export default function Store() {
 
   const selectedAuthor = filters.author || 'All Authors';
 
-  return (
+  return (<>
+    <Helmet>
+      <title>{dynamicMetaDataSeo.store.title}</title>
+      <meta name="description" content={dynamicMetaDataSeo.store.description} />
+      <meta name="keywords" content={dynamicMetaDataSeo.store.keywords} />
+      <link rel="canonical" href={currentUrl} />
+    </Helmet>
+
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
         {/* Header Section */}
@@ -673,5 +685,6 @@ export default function Store() {
         )}
       </div>
     </div>
+  </>
   );
 }
