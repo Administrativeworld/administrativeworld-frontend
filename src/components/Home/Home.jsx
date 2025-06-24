@@ -17,10 +17,6 @@ export default function HomeLayout() {
         <meta name="description" content={dynamicMetaDataSeo.home.description} />
         <meta name="keywords" content={dynamicMetaDataSeo.home.keywords} />
         <link rel="canonical" href={currentUrl} />
-        <meta property="og:title" content={dynamicMetaDataSeo.home.title} />
-        <meta property="og:description" content={dynamicMetaDataSeo.home.description} />
-        <meta property="og:image" content={dynamicMetaDataSeo.home.ogImage} />
-        <meta property="og:url" content={currentUrl} />
       </Helmet>
       <SidebarProvider>
         <SidebarInset>
