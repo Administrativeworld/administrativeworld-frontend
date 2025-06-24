@@ -172,34 +172,6 @@ const AboutUs = () => {
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content="Administrative World - Premier UPSC Coaching Institute" />
-
-        {/* Twitter Card Meta Tags */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={dynamicMetaDataSeo.about.title} />
-        <meta name="twitter:description" content={dynamicMetaDataSeo.about.description} />
-        <meta name="twitter:image" content={`${import.meta.env.VITE_DOMAIN}/about-og-image.jpg`} />
-        <meta name="twitter:image:alt" content="Administrative World UPSC Coaching" />
-
-        {/* Additional SEO Meta Tags */}
-        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-        <meta name="author" content="Administrative World" />
-        <meta name="geo.region" content="IN-HR" />
-        <meta name="geo.placename" content="Hisar, Haryana" />
-        <meta name="geo.position" content="29.1492;75.7217" />
-        <meta name="ICBM" content="29.1492, 75.7217" />
-
-        {/* Article specific meta tags */}
-        <meta property="article:publisher" content="Administrative World" />
-        <meta property="article:section" content="Education" />
-        <meta property="article:tag" content="UPSC Coaching, Civil Services, IAS Preparation" />
-
-        {/* Structured Data */}
-        <script type="application/ld+json">
-          {JSON.stringify(aboutPageStructuredData)}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify(faqStructuredData)}
-        </script>
       </Helmet>
 
       <div className="min-h-screen">

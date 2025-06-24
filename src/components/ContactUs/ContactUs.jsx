@@ -82,45 +82,6 @@ const ContactUs = () => {
   };
 
   // Structured data for better SEO
-  const contactPageStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "ContactPage",
-    "name": "Contact Administrative World - UPSC Coaching",
-    "description": "Get in touch with Administrative World for UPSC coaching, mentorship programs, and course information. Expert guidance for civil services preparation.",
-    "url": currentUrl,
-    "mainEntity": {
-      "@type": "Organization",
-      "name": "Administrative World",
-      "url": import.meta.env.VITE_DOMAIN,
-      "logo": `${import.meta.env.VITE_DOMAIN}/logo.png`,
-      "contactPoint": [
-        {
-          "@type": "ContactPoint",
-          "telephone": "+91-98968-59767",
-          "contactType": "customer service",
-          "availableLanguage": ["English", "Hindi"],
-          "hoursAvailable": {
-            "@type": "OpeningHoursSpecification",
-            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-            "opens": "08:00",
-            "closes": "18:00"
-          }
-        }
-      ],
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Hisar",
-        "addressRegion": "Haryana",
-        "postalCode": "125001",
-        "addressCountry": "IN"
-      },
-      "email": "info@administrativeworld.com",
-      "sameAs": [
-        "https://www.youtube.com/@Admn_World",
-        "https://facebook.com/yourpage"
-      ]
-    }
-  };
 
   return (
     <>
@@ -129,33 +90,6 @@ const ContactUs = () => {
         <meta name="description" content={dynamicMetaDataSeo.contact.description} />
         <meta name="keywords" content={dynamicMetaDataSeo.contact.keywords} />
         <link rel="canonical" href={currentUrl} />
-
-        {/* Open Graph Meta Tags */}
-        <meta property="og:title" content={dynamicMetaDataSeo.contact.title} />
-        <meta property="og:description" content={dynamicMetaDataSeo.contact.description} />
-        <meta property="og:url" content={currentUrl} />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Administrative World" />
-        <meta property="og:image" content={`${import.meta.env.VITE_DOMAIN}/contact-og-image.jpg`} />
-
-        {/* Twitter Card Meta Tags */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={dynamicMetaDataSeo.contact.title} />
-        <meta name="twitter:description" content={dynamicMetaDataSeo.contact.description} />
-        <meta name="twitter:image" content={`${import.meta.env.VITE_DOMAIN}/contact-og-image.jpg`} />
-
-        {/* Additional SEO Meta Tags */}
-        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-        <meta name="author" content="Administrative World" />
-        <meta name="geo.region" content="IN-HR" />
-        <meta name="geo.placename" content="Hisar, Haryana" />
-        <meta name="geo.position" content="29.1492;75.7217" />
-        <meta name="ICBM" content="29.1492, 75.7217" />
-
-        {/* Structured Data */}
-        <script type="application/ld+json">
-          {JSON.stringify(contactPageStructuredData)}
-        </script>
       </Helmet>
 
       <div className="min-h-screen">
