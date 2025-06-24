@@ -1,0 +1,46 @@
+User-agent: *
+
+# Allow access to public pages
+Allow: /
+Allow: /home
+Allow: /home/
+Allow: /home/explore
+Allow: /home/course
+Allow: /home/store
+Allow: /home/about
+Allow: /home/contact
+Allow: /login
+
+# Disallow private/protected routes
+Disallow: /admin/
+Disallow: /admin/*
+Disallow: /home/enrolled
+Disallow: /home/user
+Disallow: /reset-password
+
+# Disallow common unwanted paths
+Disallow: /api/
+Disallow: /private/
+Disallow: /*.json$
+Disallow: /*?*utm_*
+Disallow: /*?*session*
+Disallow: /*?*token*
+
+# Allow common resource files
+Allow: /favicon.ico
+Allow: /robots.txt
+Allow: /sitemap.xml
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.gif$
+Allow: /*.svg$
+Allow: /*.webp$
+
+# Sitemap location
+Sitemap: https://administrativeworld.live/sitemap.xml
+
+# Crawl delay (optional - adjust as needed)
+Crawl-delay: 1
