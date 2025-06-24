@@ -81,137 +81,380 @@ const ContactUs = () => {
     }
   };
 
-  return (<>
-    <Helmet>
-      <title>{dynamicMetaDataSeo.contact.title}</title>
-      <meta name="description" content={dynamicMetaDataSeo.contact.description} />
-      <meta name="keywords" content={dynamicMetaDataSeo.contact.keywords} />
-      <link rel="canonical" href={currentUrl} />
-    </Helmet>
+  // Structured data for better SEO
+  const contactPageStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Contact Administrative World - UPSC Coaching",
+    "description": "Get in touch with Administrative World for UPSC coaching, mentorship programs, and course information. Expert guidance for civil services preparation.",
+    "url": currentUrl,
+    "mainEntity": {
+      "@type": "Organization",
+      "name": "Administrative World",
+      "url": import.meta.env.VITE_DOMAIN,
+      "logo": `${import.meta.env.VITE_DOMAIN}/logo.png`,
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-98968-59767",
+          "contactType": "customer service",
+          "availableLanguage": ["English", "Hindi"],
+          "hoursAvailable": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+            "opens": "08:00",
+            "closes": "18:00"
+          }
+        }
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Hisar",
+        "addressRegion": "Haryana",
+        "postalCode": "125001",
+        "addressCountry": "IN"
+      },
+      "email": "info@administrativeworld.com",
+      "sameAs": [
+        "https://www.youtube.com/@Admn_World",
+        "https://facebook.com/yourpage"
+      ]
+    }
+  };
 
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-4xl font-bold mb-4">Get in Touch</h1>
-          <p className="text-lg max-w-2xl mx-auto">
-            Have questions about our courses or need guidance? We&apos;re here to help you achieve your UPSC dreams.
-          </p>
-        </div>
-      </section>
+  return (
+    <>
+      <Helmet>
+        <title>{dynamicMetaDataSeo.contact.title}</title>
+        <meta name="description" content={dynamicMetaDataSeo.contact.description} />
+        <meta name="keywords" content={dynamicMetaDataSeo.contact.keywords} />
+        <link rel="canonical" href={currentUrl} />
 
-      {/* Contact Information */}
-      <section className="py-12 px-4">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card><CardContent className="pt-6"><Phone className="w-10 h-10 text-primary mb-4" /><h3 className="font-semibold mb-2">Phone</h3><p>+91 98968-59767</p><p>Mon-Sat: 8:00 AM - 6:00 PM</p></CardContent></Card>
-          <Card><CardContent className="pt-6"><Mail className="w-10 h-10 text-primary mb-4" /><h3 className="font-semibold mb-2">Email</h3><p>info@administrativeworld.com</p><p>support@administrativeworld.com</p></CardContent></Card>
-          <Card><CardContent className="pt-6"><MapPin className="w-10 h-10 text-primary mb-4" /><h3 className="font-semibold mb-2">Location</h3><p>Hisar (Haryana)</p><p>125001</p></CardContent></Card>
-          <Card><CardContent className="pt-6"><Clock className="w-10 h-10 text-primary mb-4" /><h3 className="font-semibold mb-2">Office Hours</h3><p>Monday - Saturday</p><p>10:00 AM - 6:00 PM</p></CardContent></Card>
-        </div>
-      </section>
+        {/* Open Graph Meta Tags */}
+        <meta property="og:title" content={dynamicMetaDataSeo.contact.title} />
+        <meta property="og:description" content={dynamicMetaDataSeo.contact.description} />
+        <meta property="og:url" content={currentUrl} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Administrative World" />
+        <meta property="og:image" content={`${import.meta.env.VITE_DOMAIN}/contact-og-image.jpg`} />
 
-      {/* Contact Form Section */}
-      <section className="py-12 px-4">
-        <div className="max-w-4xl mx-auto">
-          <Card>
-            <CardHeader>
-              <CardTitle>Send us a Message</CardTitle>
-              <CardDescription>
-                Fill out the form below and we&apos;ll get back to you as soon as possible.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Full Name</label>
-                    <Input name="fullname" value={formData.fullname} onChange={handleChange} placeholder="Enter your full name" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Email</label>
-                    <Input name="email" type="email" value={formData.email} onChange={handleChange} placeholder="Enter your email" />
-                  </div>
-                </div>
+        {/* Twitter Card Meta Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={dynamicMetaDataSeo.contact.title} />
+        <meta name="twitter:description" content={dynamicMetaDataSeo.contact.description} />
+        <meta name="twitter:image" content={`${import.meta.env.VITE_DOMAIN}/contact-og-image.jpg`} />
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Phone Number</label>
-                  <Input name="phoneNo" value={formData.phoneNo} onChange={handleChange} placeholder="Enter your phone number" />
-                </div>
+        {/* Additional SEO Meta Tags */}
+        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <meta name="author" content="Administrative World" />
+        <meta name="geo.region" content="IN-HR" />
+        <meta name="geo.placename" content="Hisar, Haryana" />
+        <meta name="geo.position" content="29.1492;75.7217" />
+        <meta name="ICBM" content="29.1492, 75.7217" />
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Subject</label>
-                  <Select onValueChange={handleSubjectChange} value={formData.subject}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a subject" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="general">General Inquiry</SelectItem>
-                      <SelectItem value="courses">Course Information</SelectItem>
-                      <SelectItem value="mentorship">Mentorship Program</SelectItem>
-                      <SelectItem value="support">Technical Support</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(contactPageStructuredData)}
+        </script>
+      </Helmet>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Message</label>
-                  <Textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    placeholder="Type your message here"
-                    className="min-h-[150px]"
-                  />
-                </div>
-
-                <Button type="submit" className="w-full" disabled={loading}>
-                  <Send className="w-4 h-4 mr-2" />
-                  {loading ? 'Sending...' : 'Send Message'}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Social Media Section */}
-      <section className="py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-6">Connect With Us</h2>
-          <div className="flex justify-center space-x-6">
-            <Button variant="outline" size="lg" className="rounded-full"><a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer">
-              <Facebook className="w-5 h-5" />
-            </a></Button>
-            <Button variant="outline" size="lg" className="rounded-full"><Twitter className="w-5 h-5" /></Button>
-            <Button variant="outline" size="lg" className="rounded-full"><Instagram className="w-5 h-5" /></Button>
-            <Button asChild variant="outline" size="lg" className="rounded-full"><a href="https://www.youtube.com/@Admn_World" target="_blank" rel="noopener noreferrer">
-              <Youtube className="w-5 h-5" /></a></Button>
+      <div className="min-h-screen">
+        {/* Hero Section with SEO-optimized content */}
+        <section className="py-16 px-4" role="banner">
+          <div className="max-w-6xl mx-auto text-center">
+            <h1 className="text-4xl font-bold mb-4">
+              Contact Administrative World - UPSC Coaching & Mentorship
+            </h1>
+            <p className="text-lg max-w-2xl mx-auto">
+              Get expert guidance for UPSC civil services preparation. Contact our experienced mentors for course information,
+              personalized coaching, and comprehensive study materials. We're here to help you achieve your IAS dreams.
+            </p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* FAQ or Support */}
-      <section className="py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-6">Quick Support</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Button variant="outline" className="h-auto py-8 flex flex-col items-center">
-              <MessageSquare className="w-8 h-8 mb-2" />
-              <span className="text-lg font-semibold">Live Chat Support</span>
-              <span className="text-sm ">+91 98968-59767</span>
-              <span className="text-sm ">Available 8 AM - 6 PM</span>
-            </Button>
-            <Button variant="outline" className="h-auto py-8 flex flex-col items-center">
-              <Mail className="w-8 h-8 mb-2" />
-              <span className="text-lg font-semibold">Email Support</span>
-              <span className="text-sm ">contactadworld01@gmail.com</span>
-              <span className="text-sm ">24/7 Response</span>
-            </Button>
+        {/* Contact Information with structured data markup */}
+        <section className="py-12 px-4" role="main">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-8">
+              Get in Touch - Multiple Ways to Reach Us
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card itemScope itemType="https://schema.org/ContactPoint">
+                <CardContent className="pt-6">
+                  <Phone className="w-10 h-10 text-primary mb-4" aria-hidden="true" />
+                  <h3 className="font-semibold mb-2">Phone Support</h3>
+                  <p itemProp="telephone">
+                    <a href="tel:+919896859767" className="text-primary hover:underline">
+                      +91 98968-59767
+                    </a>
+                  </p>
+                  <p className="text-sm text-muted-foreground" itemProp="hoursAvailable">
+                    Mon-Sat: 8:00 AM - 6:00 PM IST
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card itemScope itemType="https://schema.org/ContactPoint">
+                <CardContent className="pt-6">
+                  <Mail className="w-10 h-10 text-primary mb-4" aria-hidden="true" />
+                  <h3 className="font-semibold mb-2">Email Support</h3>
+                  <p>
+                    <a href="mailto:info@administrativeworld.com" className="text-primary hover:underline" itemProp="email">
+                      info@administrativeworld.com
+                    </a>
+                  </p>
+                  <p>
+                    <a href="mailto:support@administrativeworld.com" className="text-primary hover:underline">
+                      support@administrativeworld.com
+                    </a>
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card itemScope itemType="https://schema.org/PostalAddress">
+                <CardContent className="pt-6">
+                  <MapPin className="w-10 h-10 text-primary mb-4" aria-hidden="true" />
+                  <h3 className="font-semibold mb-2">Our Location</h3>
+                  <address className="not-italic">
+                    <span itemProp="addressLocality">Hisar</span>,
+                    <span itemProp="addressRegion"> Haryana</span><br />
+                    <span itemProp="postalCode">125001</span><br />
+                    <span itemProp="addressCountry">India</span>
+                  </address>
+                </CardContent>
+              </Card>
+
+              <Card itemScope itemType="https://schema.org/OpeningHoursSpecification">
+                <CardContent className="pt-6">
+                  <Clock className="w-10 h-10 text-primary mb-4" aria-hidden="true" />
+                  <h3 className="font-semibold mb-2">Office Hours</h3>
+                  <p itemProp="dayOfWeek" content="Monday,Tuesday,Wednesday,Thursday,Friday,Saturday">
+                    Monday - Saturday
+                  </p>
+                  <p>
+                    <time itemProp="opens" content="10:00">10:00 AM</time> -
+                    <time itemProp="closes" content="18:00"> 6:00 PM</time>
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
-  </>
+        </section>
+
+        {/* Contact Form Section with accessibility improvements */}
+        <section className="py-12 px-4" aria-labelledby="contact-form-heading">
+          <div className="max-w-4xl mx-auto">
+            <Card>
+              <CardHeader>
+                <CardTitle id="contact-form-heading">
+                  Send us a Message - UPSC Coaching Inquiry Form
+                </CardTitle>
+                <CardDescription>
+                  Fill out the form below for course inquiries, mentorship programs, or general questions about UPSC preparation.
+                  We'll get back to you within 24 hours.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label htmlFor="fullname" className="text-sm font-medium">
+                        Full Name <span className="text-red-500" aria-label="required">*</span>
+                      </label>
+                      <Input
+                        id="fullname"
+                        name="fullname"
+                        value={formData.fullname}
+                        onChange={handleChange}
+                        placeholder="Enter your full name"
+                        required
+                        aria-describedby="fullname-error"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label htmlFor="email" className="text-sm font-medium">
+                        Email Address <span className="text-red-500" aria-label="required">*</span>
+                      </label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="Enter your email address"
+                        required
+                        aria-describedby="email-error"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="phoneNo" className="text-sm font-medium">
+                      Phone Number (Optional)
+                    </label>
+                    <Input
+                      id="phoneNo"
+                      name="phoneNo"
+                      type="tel"
+                      value={formData.phoneNo}
+                      onChange={handleChange}
+                      placeholder="Enter your phone number"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="subject" className="text-sm font-medium">
+                      Subject <span className="text-red-500" aria-label="required">*</span>
+                    </label>
+                    <Select onValueChange={handleSubjectChange} value={formData.subject} required>
+                      <SelectTrigger id="subject">
+                        <SelectValue placeholder="Select inquiry type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="general">General Inquiry</SelectItem>
+                        <SelectItem value="courses">UPSC Course Information</SelectItem>
+                        <SelectItem value="mentorship">Personal Mentorship Program</SelectItem>
+                        <SelectItem value="support">Technical Support</SelectItem>
+                        <SelectItem value="admission">Admission Process</SelectItem>
+                        <SelectItem value="fee">Fee Structure</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="message" className="text-sm font-medium">
+                      Message <span className="text-red-500" aria-label="required">*</span>
+                    </label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      placeholder="Please describe your inquiry in detail. Include your current preparation status, preferred course type, or any specific questions about UPSC coaching."
+                      className="min-h-[150px]"
+                      required
+                      aria-describedby="message-help"
+                    />
+                    <p id="message-help" className="text-xs text-muted-foreground">
+                      The more details you provide, the better we can assist you with your UPSC preparation needs.
+                    </p>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={loading}
+                    aria-describedby="submit-help"
+                  >
+                    <Send className="w-4 h-4 mr-2" aria-hidden="true" />
+                    {loading ? 'Sending Message...' : 'Send Message'}
+                  </Button>
+                  <p id="submit-help" className="text-xs text-muted-foreground text-center">
+                    We typically respond within 24 hours during business days.
+                  </p>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Social Media Section with proper linking */}
+        <section className="py-12 px-4" aria-labelledby="social-heading">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 id="social-heading" className="text-2xl font-bold mb-6">
+              Follow Administrative World on Social Media
+            </h2>
+            <p className="mb-6 text-muted-foreground">
+              Stay updated with latest UPSC notifications, study tips, and success stories
+            </p>
+            <div className="flex justify-center space-x-6" role="list">
+              <Button variant="outline" size="lg" className="rounded-full" role="listitem">
+                <a
+                  href="https://facebook.com/yourpage"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Follow us on Facebook"
+                  className="flex items-center"
+                >
+                  <Facebook className="w-5 h-5" aria-hidden="true" />
+                  <span className="sr-only">Facebook</span>
+                </a>
+              </Button>
+              <Button variant="outline" size="lg" className="rounded-full" role="listitem">
+                <a
+                  href="#"
+                  aria-label="Follow us on Twitter"
+                  className="flex items-center"
+                >
+                  <Twitter className="w-5 h-5" aria-hidden="true" />
+                  <span className="sr-only">Twitter</span>
+                </a>
+              </Button>
+              <Button variant="outline" size="lg" className="rounded-full" role="listitem">
+                <a
+                  href="#"
+                  aria-label="Follow us on Instagram"
+                  className="flex items-center"
+                >
+                  <Instagram className="w-5 h-5" aria-hidden="true" />
+                  <span className="sr-only">Instagram</span>
+                </a>
+              </Button>
+              <Button variant="outline" size="lg" className="rounded-full" role="listitem">
+                <a
+                  href="https://www.youtube.com/@Admn_World"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Subscribe to our YouTube channel"
+                  className="flex items-center"
+                >
+                  <Youtube className="w-5 h-5" aria-hidden="true" />
+                  <span className="sr-only">YouTube</span>
+                </a>
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* Quick Support Section */}
+        <section className="py-12 px-4" aria-labelledby="support-heading">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 id="support-heading" className="text-2xl font-bold mb-6">
+              Immediate Support Options
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card className="h-auto py-8 flex flex-col items-center hover:shadow-lg transition-shadow">
+                <CardContent className="text-center">
+                  <MessageSquare className="w-8 h-8 mb-2 mx-auto text-primary" aria-hidden="true" />
+                  <h3 className="text-lg font-semibold mb-2">Live Phone Support</h3>
+                  <p className="mb-2">
+                    <a href="tel:+919896859767" className="text-primary hover:underline font-medium">
+                      +91 98968-59767
+                    </a>
+                  </p>
+                  <p className="text-sm text-muted-foreground">Available 8 AM - 6 PM IST</p>
+                  <p className="text-sm text-muted-foreground">Monday to Saturday</p>
+                </CardContent>
+              </Card>
+
+              <Card className="h-auto py-8 flex flex-col items-center hover:shadow-lg transition-shadow">
+                <CardContent className="text-center">
+                  <Mail className="w-8 h-8 mb-2 mx-auto text-primary" aria-hidden="true" />
+                  <h3 className="text-lg font-semibold mb-2">Email Support</h3>
+                  <p className="mb-2">
+                    <a href="mailto:contactadworld01@gmail.com" className="text-primary hover:underline font-medium">
+                      contactadworld01@gmail.com
+                    </a>
+                  </p>
+                  <p className="text-sm text-muted-foreground">24/7 Response Promise</p>
+                  <p className="text-sm text-muted-foreground">Typically within 2-4 hours</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+      </div>
+    </>
   );
 };
 

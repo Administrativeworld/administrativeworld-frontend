@@ -1,47 +1,44 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 import { fetchCourses } from "@/redux/api/getCourses";
 import AdditionalDetails from "./AdditionalDetails";
 import TopRatedCourses from "./TopRatedCourses/TopRatedCourses";
 import HeroSection from "./HeroSection/HeroSection";
-import axios from "axios";
 
-
+import dynamicMetaDataSeo from "@/configs/dynamicMetaDataSeo";
 
 export default function HomePage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [metaData, setMetaData] = useState();
-
-  useEffect(() => {
-    const fetchMetaData = async () => {
-      try {
-        const dataResponse = await axios.get(`${import.meta.env.VITE_BASE_URL}/metadata/getBasicMetaDataOptimized`);
-        setMetaData(dataResponse.data.data);
-      } catch (error) {
-        console.error("Error fetching metadata:", error);
-      }
-    };
-
-    fetchMetaData();
-  }, []);
   useEffect(() => {
     dispatch(fetchCourses({ page: 1, limit: 3, categoryIds: [] }));
   }, [dispatch]);
 
+  const currentUrl = `${import.meta.env.VITE_DOMAIN}${location.pathname}`;
+
   return (
     <div>
-      <HeroSection metaData={metaData} />
-      <div className="mt-12">
-        <div className="">
-          <TopRatedCourses metaData={metaData} />
-        </div>
-      </div>
+      <Helmet>
+        <title>{dynamicMetaDataSeo.home.title}</title>
+        <meta name="description" content={dynamicMetaDataSeo.home.description} />
+        <meta name="keywords" content={dynamicMetaDataSeo.home.keywords} />
+        <link rel="canonical" href={currentUrl} />
+        <meta property="og:title" content={dynamicMetaDataSeo.home.title} />
+        <meta property="og:description" content={dynamicMetaDataSeo.home.description} />
+        <meta property="og:image" content={dynamicMetaDataSeo.home.ogImage} />
+        <meta property="og:url" content={currentUrl} />
+      </Helmet>
 
-      <AdditionalDetails metaData={metaData} />
+      <HeroSection />
+      <div className="mt-12">
+        <TopRatedCourses />
+      </div>
+      <AdditionalDetails />
     </div>
   );
 }

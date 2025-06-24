@@ -1,20 +1,23 @@
 const dynamicMetaDataSeo = {
+
     home: {
-        title: "UPSC Public Administration Coaching | Administrative World",
-        description: "Crack UPSC with the best Public Administration optional coaching. Join Administrative World for expert guidance, resources, and IAS success strategies.",
-        keywords: "UPSC Public Administration, UPSC coaching, IAS preparation, Public Administration coaching, UPSC 2026 strategy, Administrative World",
-        url: "",
-        image: ""
+        title: "Administrative World - Best UPSC Preparation Institute",
+        description: "Leading UPSC coaching institute with comprehensive courses...",
+        keywords: "UPSC coaching, civil services preparation, IAS coaching",
+        ogImage: "/images/home-og.jpg"
     },
-
+    contact: {
+        title: "Contact Us - Administrative World",
+        description: "Get in touch with our UPSC experts for guidance...",
+        keywords: "contact UPSC coaching, UPSC guidance, civil services help",
+        ogImage: "/images/contact-og.jpg"
+    },
     courses: {
-        title: "UPSC Public Administration Courses | Master the Optional Subject",
-        description: "Explore expert-led Public Administration courses for UPSC aspirants. Structured learning, detailed syllabus coverage, and mentorship for top results.",
-        keywords: "Public Administration UPSC course, UPSC optional coaching, IAS online classes, Public Administration syllabus, Administrative Thinkers coaching",
-        url: "",
-        image: ""
+        title: "UPSC Courses - Administrative World",
+        description: "Comprehensive UPSC preparation courses for all stages...",
+        keywords: "UPSC courses, prelims mains, civil services syllabus",
+        ogImage: "/images/courses-og.jpg"
     },
-
     store: {
         title: "Buy UPSC Notes & Mock Tests | Administrative World Store",
         description: "Get top-quality Public Administration notes, mock tests, and UPSC resources. Download digital study material to boost your IAS preparation.",
@@ -31,13 +34,7 @@ const dynamicMetaDataSeo = {
         image: ""
     },
 
-    contact: {
-        title: "Contact Us | Administrative World UPSC Coaching",
-        description: "Have questions about UPSC Public Administration coaching? Contact us for course info, mentorship, support, or free guidance from experts.",
-        keywords: "Contact UPSC coaching, Administrative World contact, UPSC course inquiry, IAS mentorship, UPSC guidance",
-        url: "",
-        image: ""
-    },
+
 
     articles: {
         title: "UPSC Public Administration Insights, Strategies & Answer Writing Tips",
