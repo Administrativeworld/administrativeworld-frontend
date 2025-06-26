@@ -47,6 +47,8 @@ import ArticleCreateSteps from "./components/Admin/Articles/CreateArticle/Articl
 import ArticlePanelComponent from "./components/Admin/Articles/ArticlePanelComponent/ArticlePanelComponent.jsx";
 import ArticlePanel from "./components/Admin/Articles/ArticlePanel.jsx";
 import PublishedArticle from "./components/Admin/Articles/PublishedArticle/PublishedArticle.jsx";
+import Articles from "./components/Articles/Articles.jsx";
+import ReadArticle from "./components/Articles/ReadArticle.jsx";
 
 const LoadingScreen = () => (
   <div className="flex items-center justify-center min-h-screen bg-background">
@@ -125,7 +127,10 @@ function App() {
           <Route path="about" element={<AboutUs />} />
           <Route path="contact" element={<ContactUs />} />
           <Route path="store" element={<Store />} />
+          <Route path="articles" element={<Articles />}>
 
+          </Route>
+          <Route path="articles/:slug" element={<ReadArticle />} />
           {/* Protected User Routes */}
           <Route
             path="enrolled"

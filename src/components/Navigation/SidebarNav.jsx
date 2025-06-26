@@ -24,7 +24,7 @@ function SidebarNav() {
             <SidebarGroupContent>
               <SidebarMenu className="">
                 {adminNavLinks.map((link, index) => (
-                  <div key={index} className={`flex items-center gap-2 py-2 px-4 hover:bg-background cursor-pointer ${location.pathname === link.path && 'backdrop-brightness-200 border'} rounded-md`} onClick={() => { navigate(link.path) }}>
+                  <div key={index} className={` text-xs flex items-center gap-2 py-1 px-4 hover:bg-background cursor-pointer ${location.pathname === link.path && 'backdrop-brightness-200 border'} rounded-md`} onClick={() => { navigate(link.path) }}>
                     {link.icon}
                     <span>{link.title}</span>
                   </div>

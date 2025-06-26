@@ -9,7 +9,13 @@ import {
   Sun,
   Menu,
   X,
-  ChevronDown
+  ChevronDown,
+  FileText,
+  Home,
+  Info,
+  Phone,
+  Settings,
+  Book
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useNavigate, Link } from "react-router-dom";
@@ -20,6 +26,8 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuGroup,
 } from "../ui/dropdown-menu";
 import {
   Sheet,
@@ -42,6 +50,47 @@ function NavBar() {
     navigate(path);
     setIsOpen(false);
   };
+
+  // Categorize navigation links into two separate dropdowns
+  const knowledgeBaseLinks = [
+    { title: "Articles", path: "/home/articles", icon: FileText },
+    // { title: "Documentation", path: "/docs", icon: Book },
+    // { title: "Tutorials", path: "/tutorials", icon: Book },
+    // { title: "FAQ", path: "/faq", icon: Settings },
+    // { title: "Guides", path: "/guides", icon: Book },
+  ];
+
+  const informationLinks = [
+    // { title: "About Us", path: "/about", icon: Info },
+    // { title: "Contact", path: "/contact", icon: Phone },
+    // { title: "Services", path: "/services", icon: Settings },
+    // { title: "Privacy Policy", path: "/privacy", icon: Info },
+    // { title: "Terms of Service", path: "/terms", icon: Info },
+  ];
+
+  // Merge existing navBarDefaultLinks with categories if they exist
+  if (navBarDefaultLinks && navBarDefaultLinks.length > 0) {
+    // You can customize this logic to categorize your existing links
+    navBarDefaultLinks.forEach(link => {
+      // Check if link already exists to avoid duplicates
+      const existsInKnowledge = knowledgeBaseLinks.some(kb => kb.path === link.path);
+      const existsInInfo = informationLinks.some(info => info.path === link.path);
+
+      if (!existsInKnowledge && !existsInInfo) {
+        // Categorize based on path or title
+        if (link.path.includes('article') || link.path.includes('doc') || link.path.includes('guide') ||
+          link.path.includes('tutorial') || link.path.includes('faq') || link.path.includes('help')) {
+          knowledgeBaseLinks.push({ ...link, icon: link.icon || Book });
+        } else if (link.path.includes('about') || link.path.includes('contact') || link.path.includes('info') ||
+          link.path.includes('service') || link.path.includes('privacy') || link.path.includes('terms')) {
+          informationLinks.push({ ...link, icon: link.icon || Info });
+        } else {
+          // Default to knowledge base for other links
+          knowledgeBaseLinks.push({ ...link, icon: link.icon || FileText });
+        }
+      }
+    });
+  }
 
   return (
     <header role="banner">
@@ -81,21 +130,88 @@ function NavBar() {
 
             {/* Right Side - Navigation and Actions */}
             <div className="flex items-center gap-1">
-              {/* Desktop Navigation Links */}
-              <ul className="hidden md:flex items-center gap-1 mr-2 list-none" role="menubar">
-                {navBarDefaultLinks.map((item, index) => (
-                  <li key={index} role="none">
-                    <Link
-                      to={item.path}
-                      className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
-                      role="menuitem"
-                      aria-label={`Navigate to ${item.title}`}
+              {/* Desktop Navigation - Two Separate Dropdowns */}
+              <div className="hidden md:flex items-center gap-1 mr-2">
+                {/* Knowledge Base Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3"
+                      aria-label="Knowledge Base menu"
+                      aria-expanded="false"
+                      aria-haspopup="true"
                     >
-                      {item.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+                      <Book className="mr-1 h-4 w-4" aria-hidden="true" />
+                      Knowledge Base
+                      <ChevronDown className="ml-1 h-3 w-3" aria-hidden="true" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-56" role="menu">
+                    <DropdownMenuLabel>Knowledge Base</DropdownMenuLabel>
+                    <DropdownMenuGroup>
+                      {knowledgeBaseLinks.map((item, index) => {
+                        const IconComponent = item.icon || FileText;
+                        return (
+                          <DropdownMenuItem
+                            key={`knowledge-${index}`}
+                            onClick={() => handleNavigation(item.path)}
+                            role="menuitem"
+                          >
+                            <IconComponent className="mr-2 h-4 w-4" aria-hidden="true" />
+                            {item.title}
+                          </DropdownMenuItem>
+                        );
+                      })}
+                    </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Information Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3"
+                      aria-label="Information menu"
+                      aria-expanded="false"
+                      aria-haspopup="true"
+                    >
+                      <Info className="mr-1 h-4 w-4" aria-hidden="true" />
+                      Information
+                      <ChevronDown className="ml-1 h-3 w-3" aria-hidden="true" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-56" role="menu">
+                    <DropdownMenuLabel>Information</DropdownMenuLabel>
+                    <DropdownMenuGroup>
+                      {informationLinks.map((item, index) => {
+                        const IconComponent = item.icon || Info;
+                        return (
+                          <DropdownMenuItem
+                            key={`info-${index}`}
+                            onClick={() => handleNavigation(item.path)}
+                            role="menuitem"
+                          >
+                            <IconComponent className="mr-2 h-4 w-4" aria-hidden="true" />
+                            {item.title}
+                          </DropdownMenuItem>
+                        );
+                      })}
+                    </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Direct Home Button */}
+                <Link
+                  to="/home"
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3"
+                  aria-label="Navigate to Home"
+                >
+                  <Home className="mr-2 h-4 w-4" aria-hidden="true" />
+                  Home
+                </Link>
+              </div>
 
               {/* User Profile Menu */}
               {loggedIn && user && (
@@ -179,21 +295,81 @@ function NavBar() {
                       </SheetTitle>
                     </SheetHeader>
                     <nav className="mt-6 space-y-4" role="navigation" aria-label="Mobile navigation">
-                      {/* Mobile Navigation Links */}
-                      <ul className="space-y-2 list-none" role="menu">
-                        {navBarDefaultLinks.map((item, index) => (
-                          <li key={index} role="none">
-                            <Link
-                              to={item.path}
-                              className="inline-flex items-center justify-start w-full whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start text-left"
-                              onClick={() => setIsOpen(false)}
-                              role="menuitem"
-                            >
-                              {item.title}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
+                      {/* Mobile Navigation Links - Two Separate Sections */}
+                      <div className="space-y-4">
+                        {/* Knowledge Base Section */}
+                        <div>
+                          <h3 className="px-3 mb-2 text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center">
+                            <Book className="mr-2 h-4 w-4" />
+                            Knowledge Base
+                          </h3>
+                          <ul className="space-y-1 list-none" role="menu">
+                            {knowledgeBaseLinks.map((item, index) => {
+                              const IconComponent = item.icon || FileText;
+                              return (
+                                <li key={`mobile-knowledge-${index}`} role="none">
+                                  <Link
+                                    to={item.path}
+                                    className="inline-flex items-center justify-start w-full whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start text-left"
+                                    onClick={() => setIsOpen(false)}
+                                    role="menuitem"
+                                  >
+                                    <IconComponent className="mr-2 h-4 w-4" aria-hidden="true" />
+                                    {item.title}
+                                  </Link>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+
+                        <Separator />
+
+                        {/* Information Section */}
+                        <div>
+                          <h3 className="px-3 mb-2 text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center">
+                            <Info className="mr-2 h-4 w-4" />
+                            Information
+                          </h3>
+                          <ul className="space-y-1 list-none" role="menu">
+                            {informationLinks.map((item, index) => {
+                              const IconComponent = item.icon || Info;
+                              return (
+                                <li key={`mobile-info-${index}`} role="none">
+                                  <Link
+                                    to={item.path}
+                                    className="inline-flex items-center justify-start w-full whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start text-left"
+                                    onClick={() => setIsOpen(false)}
+                                    role="menuitem"
+                                  >
+                                    <IconComponent className="mr-2 h-4 w-4" aria-hidden="true" />
+                                    {item.title}
+                                  </Link>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+
+                        <Separator />
+
+                        {/* Quick Access - Home */}
+                        <div>
+                          <h3 className="px-3 mb-2 text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center">
+                            <Home className="mr-2 h-4 w-4" />
+                            Quick Access
+                          </h3>
+                          <Link
+                            to="/home"
+                            className="inline-flex items-center justify-start w-full whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start text-left"
+                            onClick={() => setIsOpen(false)}
+                            role="menuitem"
+                          >
+                            <Home className="mr-2 h-4 w-4" aria-hidden="true" />
+                            Home
+                          </Link>
+                        </div>
+                      </div>
 
                       <Separator />
 

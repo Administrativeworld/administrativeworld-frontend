@@ -12,59 +12,65 @@ import {
   LifeBuoy,
   BookCheck,
   BookOpen,
-  Settings, LogOut, SquarePlus, FileEdit, Newspaper
+  Settings, LogOut, SquarePlus, FileEdit, Newspaper,
+  NotepadTextIcon
 } from "lucide-react";
-
+const iconsSize = 20
 export const adminNavLinks = [
   {
     title: "Dashboard",
     path: "/admin",
-    icon: <Home />,
+    icon: <Home size={iconsSize} />,
   },
   {
     title: "Courses",
     path: "/admin/course",
-    icon: <Notebook />,
+    icon: <Notebook size={iconsSize} />,
   },
   {
     title: "Books",
     path: "/admin/books",
-    icon: <BookCheck />,
+    icon: <BookCheck size={iconsSize} />,
+  },
+  {
+    title: "Articles",
+    path: "/admin/article",
+    icon: <NotepadTextIcon size={iconsSize} />
   },
   {
     title: "Coupon",
     path: "/admin/coupon",
-    icon: <FileText />,
+    icon: <FileText size={iconsSize} />,
   },
   {
     title: "Category",
     path: "/admin/category",
-    icon: <List />,
+    icon: <List size={iconsSize} />,
   },
   {
     title: "User Insights",
     path: "",
-    icon: <Users />,
+    icon: <Users size={iconsSize} />,
   },
   {
     title: "Enroll",
     path: "/admin/enrolluser",
-    icon: <BookOpen />,
+    icon: <BookOpen size={iconsSize} />,
   },
   {
     title: "Post",
     path: "",
-    icon: <Edit />,
+    icon: <Edit size={iconsSize} />,
   },
   {
     title: "Transactions",
     path: "",
-    icon: <DollarSign />,
+    icon: <DollarSign size={iconsSize} />,
   },
   {
     title: "Statics",
     path: "",
-    icon: <BarChart />,
+    icon: <BarChart size={iconsSize} />,
   },
 ];
 
@@ -72,12 +78,12 @@ export const adminToolsLinks = [
   {
     title: "Settings",
     path: "",
-    icon: <Settings />,
+    icon: <Settings size={iconsSize} />,
   },
   {
     title: "Logout",
     path: "",
-    icon: <LogOut />,
+    icon: <LogOut size={iconsSize} />,
   },
 ];
 export const adminNavBarLinks = [

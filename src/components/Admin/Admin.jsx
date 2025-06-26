@@ -14,7 +14,7 @@ function Admin() {
       <SidebarInset>
 
         <div className="flex flex-1 flex-col">
-          <div className="border-b p-2">
+          <div className="border-b p-2 ">
             <AdminNavBar />
           </div>
           <div className="m-5">
