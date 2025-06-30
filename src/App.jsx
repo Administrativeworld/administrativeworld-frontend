@@ -127,10 +127,9 @@ function App() {
           <Route path="about" element={<AboutUs />} />
           <Route path="contact" element={<ContactUs />} />
           <Route path="store" element={<Store />} />
-          <Route path="articles" element={<Articles />}>
-
-          </Route>
+          <Route path="articles" element={<Articles />} />
           <Route path="articles/:slug" element={<ReadArticle />} />
+
           {/* Protected User Routes */}
           <Route
             path="enrolled"
@@ -198,6 +197,7 @@ const AdminRoutes = () => {
           <Route index element={<ArticlePanelComponent />} />
           <Route path="create" element={<ArticleCreateSteps />} />
           <Route path="published" element={<PublishedArticle />} />
+          <Route path="published/edit" element={<ArticleCreateSteps isEditMode={true} />} />
         </Route>
 
         {/* Other Admin Routes */}

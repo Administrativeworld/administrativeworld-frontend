@@ -19,6 +19,9 @@ import {
   Clock,
   ChevronDown
 } from 'lucide-react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 // Enhanced ArticleCard Component
 const ArticleCard = ({ article, isAdmin = false, onDelete, onInspect, onReadMore, viewMode = 'grid' }) => {
@@ -271,6 +274,7 @@ const ArticleCard = ({ article, isAdmin = false, onDelete, onInspect, onReadMore
 
 // Main Component
 function PublishedArticleCard() {
+  const navigate = useNavigate();
   const [articles, setArticles] = useState([]);
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -356,8 +360,7 @@ function PublishedArticleCard() {
 
   const handleInspect = useCallback((article) => {
     console.log('Inspect article:', article);
-    // Implement navigation logic here
-    // For example: router.push(`/admin/articles/edit/${article._id}`);
+    navigate(`/admin/article/published/edit/?id=${article._id}`)
   }, []);
 
   const handleDelete = useCallback(async (articleId) => {
@@ -366,23 +369,21 @@ function PublishedArticleCard() {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/article/delete/${articleId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
 
-      if (!response.ok) {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/article/deleteArticle/?id=${articleId}`,
+        {}, { withCredentials: true }
+      )
+      console.log(response)
+      if (!response.statusText === 'ok') {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      if (response.status === 200) {
+        setArticles(prev => prev.filter(article => article._id !== articleId));
 
-      // Remove the deleted article from state
-      setArticles(prev => prev.filter(article => article._id !== articleId));
+        toast.success(response.data.message)
+      }
 
-      // Show success message (you might want to use a proper toast notification)
-      alert('Article deleted successfully!');
+
     } catch (error) {
       console.error('Error deleting article:', error);
       alert('Failed to delete article. Please try again.');

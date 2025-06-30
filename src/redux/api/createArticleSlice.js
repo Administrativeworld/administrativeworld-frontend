@@ -18,7 +18,9 @@ const initialState = {
   },
   loading: false,
   error: null,
-  savedArticles: []
+  savedArticles: [],
+  isEditMode: false,
+  originalArticleId: null
 };
 
 const createArticleSlice = createSlice({
@@ -30,6 +32,9 @@ const createArticleSlice = createSlice({
     },
     updateFormData: (state, action) => {
       state.formData = { ...state.formData, ...action.payload };
+    },
+    setFormData: (state, action) => {
+      state.formData = action.payload;
     },
     addTag: (state, action) => {
       if (!state.formData.tags.includes(action.payload)) {
@@ -53,6 +58,30 @@ const createArticleSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     },
+    setEditMode: (state, action) => {
+      state.isEditMode = action.payload.isEditMode;
+      state.originalArticleId = action.payload.articleId || null;
+    },
+    loadArticleForEdit: (state, action) => {
+      const articleData = action.payload;
+      state.formData = {
+        title: articleData.title || '',
+        slug: articleData.slug || '',
+        content: articleData.content || '',
+        thumbnail: articleData.thumbnail || '',
+        category: typeof articleData.category === 'object' ? articleData.category._id : articleData.category || '',
+        tags: articleData.tags || [],
+        metaTitle: articleData.metaTitle || '',
+        metaDescription: articleData.metaDescription || '',
+        keywords: articleData.keywords || [],
+        isFeatured: articleData.isFeatured || false,
+        isTrending: articleData.isTrending || false,
+        status: articleData.status || 'Draft'
+      };
+      state.isEditMode = true;
+      state.originalArticleId = articleData._id;
+      state.error = null;
+    },
     saveArticle: (state, action) => {
       const articleWithId = {
         ...state.formData,
@@ -65,11 +94,15 @@ const createArticleSlice = createSlice({
       state.step = 0;
       state.loading = false;
       state.error = null;
+      state.isEditMode = false;
+      state.originalArticleId = null;
     },
     resetForm: (state) => {
       state.formData = initialState.formData;
       state.step = 0;
       state.error = null;
+      state.isEditMode = false;
+      state.originalArticleId = null;
     },
     generateSlug: (state, action) => {
       const slug = action.payload
@@ -86,12 +119,15 @@ const createArticleSlice = createSlice({
 export const {
   setStep,
   updateFormData,
+  setFormData,
   addTag,
   removeTag,
   addKeyword,
   removeKeyword,
   setLoading,
   setError,
+  setEditMode,
+  loadArticleForEdit,
   saveArticle,
   resetForm,
   generateSlug
@@ -104,5 +140,7 @@ export const selectCurrentStep = (state) => state.createArticle.step;
 export const selectIsLoading = (state) => state.createArticle.loading;
 export const selectError = (state) => state.createArticle.error;
 export const selectSavedArticles = (state) => state.createArticle.savedArticles;
+export const selectIsEditMode = (state) => state.createArticle.isEditMode;
+export const selectOriginalArticleId = (state) => state.createArticle.originalArticleId;
 
 export default createArticleSlice.reducer;

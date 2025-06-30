@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -8,6 +8,9 @@ import { ArrowLeft, RefreshCw } from 'lucide-react';
 import {
   setStep,
   resetForm,
+  updateFormData,
+  setLoading,
+  setError,
   selectCurrentStep,
   selectFormData,
   selectIsLoading
@@ -16,17 +19,79 @@ import ArticleForm from './ArticleForm';
 import ArticleEditor from './ArticleEditor';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 const STEPS = [
   { id: 0, title: 'Article Details', description: 'Basic information and SEO settings' },
   { id: 1, title: 'Content Editor', description: 'Write your article content' }
 ];
 
-const ArticleCreateSteps = () => {
+const ArticleCreateSteps = ({ isEditMode = false }) => {
   const dispatch = useDispatch();
   const currentStep = useSelector(selectCurrentStep);
   const formData = useSelector(selectFormData);
   const isLoading = useSelector(selectIsLoading);
+
+  let articleId;
+  if (isEditMode) {
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    articleId = queryParams.get('id');
+  }
+
+  const fetchArticle = useCallback(async (id) => {
+    if (!id) return;
+
+    dispatch(setLoading(true));
+    dispatch(setError(null));
+
+    try {
+      // Fixed the API URL - removed extra slash and fixed env variable
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/article/getArticleById?id=${id}`,
+        {},
+        { withCredentials: true }
+      );
+      console.log("response.data", response.data)
+      if (response.data) {
+        const articleData = response.data?.data;
+
+        // Map the fetched data to match your form structure
+        const mappedData = {
+          title: articleData.title || '',
+          slug: articleData.slug || '',
+          content: articleData.content || '',
+          thumbnail: articleData.thumbnail || '',
+          category: typeof articleData.category === 'object' ? articleData.category._id : articleData.category || '',
+          tags: articleData.tags || [],
+          metaTitle: articleData.metaTitle || '',
+          metaDescription: articleData.metaDescription || '',
+          keywords: articleData.keywords || [],
+          isFeatured: articleData.isFeatured || false,
+          isTrending: articleData.isTrending || false,
+          status: articleData.status || 'Draft'
+        };
+
+        // Update the form data in Redux
+        dispatch(updateFormData(mappedData));
+
+        console.log('Article loaded successfully:', mappedData);
+      }
+    } catch (error) {
+      console.error('Error fetching article:', error);
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch article';
+      dispatch(setError(errorMessage));
+      toast.error(errorMessage);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (isEditMode && articleId) {
+      fetchArticle(articleId);
+    }
+  }, [isEditMode, articleId, fetchArticle]);
 
   const handleNext = useCallback(() => {
     dispatch(setStep(currentStep + 1));
@@ -44,6 +109,7 @@ const ArticleCreateSteps = () => {
 
   const handleSave = async () => {
     try {
+      // Validation
       if (!formData.title ||
         !formData.slug ||
         !formData.content ||
@@ -51,21 +117,37 @@ const ArticleCreateSteps = () => {
         !formData.tags ||
         !formData.metaTitle ||
         !formData.metaDescription) {
-        toast.error("Fill required fields")
+        toast.error("Fill required fields");
+        return;
       }
-      const createArticleResponse = await axios.post(`${import.meta.env.VITE_BASE_URL}/article/createArticle`, { formData },
-        {
-          withCredentials: true
-        }
-      );
-      if (createArticleResponse.status === 201) {
-        toast.success(createArticleResponse.data.message || 'Article created successfully!');
+
+      dispatch(setLoading(true));
+
+      const apiUrl = isEditMode
+        ? `${import.meta.env.VITE_BASE_URL}/article/createArticle/?id=${articleId}`
+        : `${import.meta.env.VITE_BASE_URL}/article/createArticle`;
+
+      const requestData = isEditMode
+        ? { ...formData, id: articleId }
+        : { formData };
+
+      const response = await axios.post(apiUrl, requestData, {
+        withCredentials: true
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        const successMessage = isEditMode
+          ? 'Article updated successfully!'
+          : response.data.message || 'Article created successfully!';
+        toast.success(successMessage);
       }
     } catch (error) {
-      console.log(error)
-      toast.error(error.message)
+      console.error('Error saving article:', error);
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to save article';
+      toast.error(errorMessage);
+    } finally {
+      dispatch(setLoading(false));
     }
-    // Post-save actions like API submission or navigation
   };
 
   const getStepComponent = () => {
@@ -85,8 +167,12 @@ const ArticleCreateSteps = () => {
     <div className="min-h-screen py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2">Create New Article</h1>
-          <p className="text-muted-foreground">Follow the steps below to create and publish your article</p>
+          <h1 className="text-4xl font-bold mb-2">
+            {isEditMode ? 'Edit Article' : 'Create New Article'}
+          </h1>
+          <p className="text-muted-foreground">
+            Follow the steps below to {isEditMode ? 'update' : 'create and publish'} your article
+          </p>
         </div>
 
         <Card>
@@ -125,7 +211,14 @@ const ArticleCreateSteps = () => {
           </CardHeader>
 
           <CardContent>
-            {getStepComponent()}
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <RefreshCw className="h-6 w-6 animate-spin mr-2" />
+                <span>Loading article...</span>
+              </div>
+            ) : (
+              getStepComponent()
+            )}
           </CardContent>
         </Card>
 
